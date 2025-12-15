@@ -4,19 +4,18 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth.store";
 
-export default function RootPage() {
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { token, isAuthloading } = useAuthStore();
 
   useEffect(() => {
-    if (isAuthloading) return ;
-
-    if (token) {
-      router.replace("/dashboard");
-    } else {
+    if (!isAuthloading && !token) {
       router.replace("/login");
     }
-  }, [token, isAuthloading]);
+  }, [isAuthloading, token]);
 
-  return <div><h1>loading...</h1></div>;
+  if (isAuthloading) return <div><h1>redirecting</h1></div>;
+  if (!token) return null;
+
+  return <>{children}</>;
 }

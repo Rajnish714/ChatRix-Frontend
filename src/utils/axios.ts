@@ -14,26 +14,31 @@ if(token){
 }
 return config
 })
-
 api.interceptors.response.use(
   (response) => response,
 
   async (error) => {
     const original = error.config;
 
+    // 🔴 STOP HERE if refresh itself failed
+    if (original?.url?.includes("/auth/refresh-token")) {
+      useAuthStore.getState().logout();
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
+    
 
       try {
-        const refreshResp = await api.post("/auth/refresh");
+        const refreshResp = await api.post("/auth/refresh-token");
         const newToken = refreshResp.data.accessToken;
-        console.log("i got this",newToken);
-        useAuthStore.getState().setToken(newToken);
 
+        useAuthStore.getState().setToken(newToken);
         original.headers.Authorization = `Bearer ${newToken}`;
+
         return api(original);
-      } catch (e) {
-        console.log(e);
+      } catch {
         useAuthStore.getState().logout();
       }
     }
@@ -41,5 +46,4 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 export default api;

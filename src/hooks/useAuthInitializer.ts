@@ -1,28 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuthService } from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth.store";
-import { getErrorMessage } from "@/utils/getErrorMessage";
+import { useAuth } from "./useAuth";
 
 export const useAuthInitializer = () => {
-  const { token, setUser } = useAuthStore();
-  const [isError, setError] = useState<string | null>(null);
+  const { setUser, setAuthLoading } = useAuthStore();
+  const {logoutUser}= useAuth();
+
 
   useEffect(() => {
-    if (!token) return;
-
     const init = async () => {
       try {
-        const user = await useAuthService.getMe();
+               
+        const user = await useAuthService.getMeRequest();
         setUser(user);
-      } catch (error) {
-        setError(getErrorMessage(error));
-        console.log("auth/me failed, waiting for interceptor refresh...");
-        // ❌ DO NOT CALL logout()
+      } catch (err) {
+   console.log(err);
+        await logoutUser();
+      } finally {
+        
+        setAuthLoading(false);
       }
     };
 
     init();
-  }, [token]);
+  }, []);
 };

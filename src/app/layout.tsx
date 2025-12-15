@@ -1,8 +1,8 @@
 
-"use client";
-import { useAuthInitializer } from "@/hooks/useAuthInitializer";
-
-
+import { TopAlert } from "@/components/ui/TopAlert";
+import AuthProvider from "@/providers/AuthProvider";
+import "./globals.css";
+import "./alert.css";
 
 export default function RootLayout({
   children,
@@ -10,14 +10,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   
-  useAuthInitializer();
+
 
   return (
     <html lang="en">
       <body>
-   
-          {children}
-      
+      <AuthProvider>
+        <TopAlert />
+        {children}
+      </AuthProvider>
       </body>
     </html>
   );
