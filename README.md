@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend – Chat Application (Next.js)
+
+This is the **frontend** of the Chat Application built using **Next.js (App Router)**.
+It handles authentication, protected routes, UI rendering, API communication, and real-time features.
+
+---
+
+## Tech Stack
+
+- Next.js (App Router)
+- React
+- TypeScript
+- Zustand – State management
+- Axios – API handling
+- Tailwind CSS – Styling
+- Socket.IO Client – Real-time communication
+- JWT Authentication
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/                  # App router pages & layouts
+├── components/           # Reusable UI components
+├── stores/               # Zustand stores
+├── services/             # API services & axios setup
+├── hooks/                # Custom hooks
+├── utils/                # Helper utilities
+├── types/                # TypeScript types
+└── styles/               # Global & extra styles
+```
+
+---
+
+## Authentication Flow
+
+- Access token stored in Zustand
+- Refresh token handled via HTTP-only cookies
+- Axios interceptors:
+  - Attach Authorization header
+  - Refresh access token on 401
+- Protected routes redirect unauthenticated users to `/login`
+
+---
+
+## Environment Variables
+
+Create `.env.local`:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
+```
+
+---
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run development server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open http://localhost:3000
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## API Communication
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Centralized Axios instance
+- Automatic token attachment
+- Auto refresh on token expiry
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Real-time Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Socket initialized after authentication
+- Supports:
+  - One-to-one chat
+  - Group chat
+  - Message delivery & seen status
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Styling
+
+- Tailwind CSS
+- Responsive & mobile-friendly
+- Dark mode ready
+
+---
+
+## Production Build
+
+```
+npm run build
+npm run start
+```
+
+---
+
+## Notes
+
+- Backend must be running
+- Cookies must be enabled
+- Tokens persist across page refresh
+
+---
+
+## Author
+
+Rajnish
