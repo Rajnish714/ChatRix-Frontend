@@ -77,6 +77,6 @@ export interface Pagination {
 
 export interface GetMessagesResponse {
   message: string;
-  messages: Messages[];
+  data: Messages[];
   pagination:Pagination;
 }
