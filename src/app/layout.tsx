@@ -1,8 +1,7 @@
-
-import { TopAlert } from "@/components/ui/TopAlert";
+import TopAlert from "@/components/ui/TopAlert";
 import AuthProvider from "@/providers/AuthProvider";
 import "./globals.css";
-import "./alert.css";
+
 
 export default function RootLayout({
   children,

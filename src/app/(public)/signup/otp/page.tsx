@@ -3,8 +3,10 @@
 import { OTPForm } from "@/components/auth/OTPForm";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { useAlertStore } from "@/stores/alert.store";
 
 export default function OTPPage(){
+  const {show}= useAlertStore()
     const router= useRouter()
     const {otpSession,verifyOTP,resendOTP,isError,isLoading}=useAuth()
      if (!otpSession) {
@@ -15,22 +17,28 @@ export default function OTPPage(){
 async function handleVerifyOtp(otp:string){
     const success = await verifyOTP(otp);
       if (success) {
+         show("login succesfully.", "success");
       router.replace("/login");
-    }
+    }else show("something went wrong", "error");
 }
   const handleResend = async () => {
-    await resendOTP();
+    const success=await resendOTP();
+    if(success)
+    show("Otp sent successfully.", "success");
+  else{
+      show("something went wrong", "error");
+  }
   };
 
     return(
           <div>
-      <h1>Verify OTP</h1>
-
-      {isError && <p style={{ color: "red" }}>{isError}</p>}
-
-      <OTPForm
+    
+          <OTPForm
         onSubmit={handleVerifyOtp}
         onResend={handleResend}
+           wrapperClassName="mt-4"
+             inputClassName="bg-white"
+            buttonClassName="mt-2"
       />
 
       {isLoading && <p>Processing...</p>}

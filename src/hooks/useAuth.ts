@@ -1,5 +1,5 @@
 
-
+"use client";
 import { forgotPasswordRequest, LoginRequest,OTPRequest,SignupRequest,resetPasswordRequest } from "@/types/auth.types";
 import { useState } from "react";
 import { useAuthStore } from "@/stores/auth.store";

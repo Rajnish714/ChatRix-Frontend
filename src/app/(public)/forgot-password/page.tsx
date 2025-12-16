@@ -35,11 +35,15 @@ export default function ForgotPasswordPage(){
     setTimeout(() => {
       router.replace("/login");
     }, 1500);
+  } else {
+    show("Invalid OTP or password reset failed", "error");
   }
   };
 
     const handleResend = async () => {
-    await resendOTP();
+    const success=await resendOTP();
+      if(success)
+    show("Otp resend.", "success");
   };
 
    
@@ -55,10 +59,14 @@ export default function ForgotPasswordPage(){
 
       {otpSession && (
         <>
+        
           <OTPForm
              value={otp}
              onChange={setOtp}
             onResend={handleResend}
+              wrapperClassName="mt-4"
+             inputClassName="bg-white"
+            buttonClassName="mt-2"
           />
 
           <PasswordInput
@@ -70,6 +78,8 @@ export default function ForgotPasswordPage(){
           <button
             onClick={handleResetPassword}
             disabled={!otp || !newPassword }
+             className="w-full rounded-lg bg-blue-600 py-2 text-white font-medium
+                     hover:bg-blue-700 transition disabled:opacity-60"
           >
             Reset Password
           </button>

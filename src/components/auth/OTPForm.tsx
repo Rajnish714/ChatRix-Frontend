@@ -1,19 +1,28 @@
+
 "use client";
 import { useState } from "react";
+
 type Props = {
   value?: string;
   onChange?: (otp: string) => void;
-
-  onSubmit?: (otp: string) => Promise<void>; 
+  onSubmit?: (otp: string) => Promise<void>;
   submitLabel?: string;
   onResend?: () => Promise<void>;
+
+  wrapperClassName?: string;
+  inputClassName?: string;
+  buttonClassName?: string;
 };
+
 export function OTPForm({
   value,
   onChange,
   onSubmit,
   submitLabel = "Verify OTP",
   onResend,
+  wrapperClassName = "",
+  inputClassName = "",
+  buttonClassName = "",
 }: Props) {
   const [internalOtp, setInternalOtp] = useState("");
 
@@ -32,73 +41,45 @@ export function OTPForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className={`space-y-4 ${wrapperClassName}`}
+    >
+      <label htmlFor="OTP"> Verify OTP</label>
       <input
         type="text"
+        id="OTP"
         inputMode="numeric"
         maxLength={6}
         value={otp}
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Enter 6-digit OTP"
+        className={`w-full rounded-lg border border-gray-300 px-4 py-2 text-center
+          tracking-widest text-sm focus:outline-none focus:ring-2 focus:ring-blue-500
+          ${inputClassName}`}
       />
 
-      {/* Submit button ONLY if onSubmit exists */}
       {onSubmit && (
-        <button type="submit" disabled={otp.length !== 6}>
+        <button
+          type="submit"
+          disabled={otp.length !== 6}
+          className={`w-full rounded-lg bg-blue-600 py-2 text-white font-medium
+            hover:bg-blue-700 transition disabled:opacity-60
+            ${buttonClassName}`}
+        >
           {submitLabel}
         </button>
       )}
 
       {onResend && (
-        <button type="button" onClick={onResend}>
+        <button
+          type="button"
+          onClick={onResend}
+          className="w-full text-sm text-blue-600 hover:underline"
+        >
           Resend OTP
         </button>
       )}
     </form>
   );
 }
-
-
-
-// "use client";
-// import { useState } from "react";
-
-// type Props = {
-//   onVerify: (otp: string) => Promise<void>;
-
-//   onResend?: () => Promise<void>;
-// };
-
-// export function OTPForm({ onVerify, onResend }: Props) {
-//   const [otp, setOtp] = useState("");
-
-//   const submit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (otp.length !== 6) return;
-//     await onVerify(otp);
-//   };
-
-//   return (
-//     <form onSubmit={submit}>
-//       <input
-//         type="text"
-//         inputMode="numeric"
-//         pattern="[0-9]*"
-//         maxLength={6}
-//         value={otp}
-//         onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-//         placeholder="Enter 6-digit OTP"
-//       />
-
-//       <button type="submit" disabled={otp.length !== 6}>
-//        submit
-//       </button>
-
-//       {onResend && (
-//         <button type="button" onClick={onResend}>
-//           Resend OTP
-//         </button>
-//       )}
-//     </form>
-//   );
-// }
