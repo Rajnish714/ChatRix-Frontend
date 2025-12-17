@@ -18,5 +18,5 @@ export default function RootPage() {
     }
   }, [token, isAuthloading]);
 
-  return <div><h1>loading...</h1></div>;
+  return null
 }

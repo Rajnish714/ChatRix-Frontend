@@ -10,10 +10,10 @@ export const useChatService={
 getMessagesRequest: async (
   request: GetMessagesRequest
 ): Promise<GetMessagesResponse> => {
-  const { chatId } = request;
+  const { chatId,page = 1, limit = 20 } = request;
 
   const res = await api.get("/messages", {
-    params: { chatId }
+   params: { chatId, page, limit },
   });
 
   return res.data;

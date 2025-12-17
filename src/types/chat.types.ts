@@ -39,6 +39,8 @@ export interface GetAllChatsResponse {
 
 export interface GetMessagesRequest {
     chatId: string;
+    page?: number;
+    limit?: number;
  
 }
 
@@ -77,6 +79,6 @@ export interface Pagination {
 
 export interface GetMessagesResponse {
   message: string;
-  data: Messages[];
+  messages: Messages[];
   pagination:Pagination;
 }
