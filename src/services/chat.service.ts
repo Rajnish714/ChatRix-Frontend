@@ -1,5 +1,5 @@
 import api from "@/utils/axios";
-import { GetAllChatsResponse,GetMessagesRequest,GetMessagesResponse } from "@/types/chat.types";
+import { GetAllChatsResponse,GetMessagesRequest,GetMessagesResponse,SearchSidebarRequest,SearchSidebarResponse,PrivateChat } from "@/types/chat.types";
 
 export const useChatService={
       getallChatRequest: async (): Promise<GetAllChatsResponse> => {
@@ -17,5 +17,26 @@ getMessagesRequest: async (
   });
 
   return res.data;
+ 
+},
+
+searchSidebarUsersRequest: async (
+  request: SearchSidebarRequest
+): Promise<SearchSidebarResponse> => {
+  const { q } = request;
+
+  const res = await api.get("/search", {
+   params: { q },
+  });
+
+  return res.data;
+},
+
+getOrCreatePrivateChatIdRequest: async (
+  otherUserId: string
+): Promise<PrivateChat> => {
+  const res = await api.post("/chat/private", { otherUserId });
+  return res.data.chat;
 }
+
 }

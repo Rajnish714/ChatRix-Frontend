@@ -8,7 +8,7 @@ import { useAlertStore } from "@/stores/alert.store";
 export default function OTPPage(){
   const {show}= useAlertStore()
     const router= useRouter()
-    const {otpSession,verifyOTP,resendOTP,isError,isLoading}=useAuth()
+    const {otpSession,verifyOTP,resendOTP,isLoading}=useAuth()
      if (!otpSession) {
     router.replace("/signup");
     return null;

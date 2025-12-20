@@ -2,13 +2,15 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-
+ import { disconnectSocket } from "@/services/socket.service";
 export function LogoutButton() {
   const { logoutUser } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
     await logoutUser();
+     
+  disconnectSocket();  
     router.replace("/login");
   };
 

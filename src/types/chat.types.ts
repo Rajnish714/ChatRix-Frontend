@@ -1,50 +1,22 @@
-export type ChatType = "private" | "group";
-export type MessageType = "text" | "image" | "video" | "file";
 export type ObjectId = string;
 export type ISODateString = string;
 
+export type MessageType =
+  | "text"
+  | "image"
+  | "gif"
+  | "video"
+  | "audio"
+  | "file";
+
+
 export interface ChatMember {
-  _id: string;
+  _id: ObjectId;
   username: string;
-  profilePic?: string;
+  profilePic?: string | null;
 }
 
-export interface LastMessage {
-  _id: string;
-  sender: string; // userId
-  text: string;
-  createdAt: string;
-}
-
-export interface Chat {
-  _id: string;
-  isGroup: boolean;
-  members: ChatMember[];
-  groupName?: string | null;
-  groupImage?: string;
-  admins?: string[];
-  createdBy?: string;
-  lastMessage?: LastMessage | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// ==============================
-// API responses
-// ==============================
-export interface GetAllChatsResponse {
-  message: string;
-  data: Chat[];
-}
-
-export interface GetMessagesRequest {
-    chatId: string;
-    page?: number;
-    limit?: number;
- 
-}
-
-export interface Sender {
+export interface UserSummary {
   _id: ObjectId;
   username: string;
   email: string;
@@ -54,19 +26,58 @@ export interface Sender {
   updatedAt: ISODateString;
 }
 
-export interface Messages {
-  _id: string;
-  chatId: string;
-  sender: Sender;
-  deliveredTo: ObjectId[];
-  seenBy: ObjectId[];
+
+
+export interface LastMessage {
+  _id: ObjectId;
+  sender: ObjectId;
   text: string | null;
   messageType: MessageType;
-  mediaUrl: string | null;
+  mediaUrl?: string | null;
+  createdAt: ISODateString;
+}
+
+export interface Chat {
+  _id: ObjectId;
+  isGroup: boolean;
+
+  members: ChatMember[];
+
+  groupName?: string | null;
+  groupImage?: string | null;
+
+  admins?: ObjectId[];
+  createdBy?: ObjectId;
+
+  lastMessage?: LastMessage | null;
 
   createdAt: ISODateString;
   updatedAt: ISODateString;
 }
+
+export interface MessageSender {
+  _id: ObjectId;
+  username: string;
+  profilePic?: string | null;
+}
+
+export interface Messages {
+  _id: ObjectId;
+  chatId: ObjectId;
+
+  sender: MessageSender;
+
+  deliveredTo: ObjectId[];
+  seenBy: ObjectId[];
+
+  text: string | null;
+  messageType: MessageType;
+  mediaUrl?: string | null;
+
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
 
 export interface Pagination {
   total: number;
@@ -76,9 +87,74 @@ export interface Pagination {
   hasNextPage: boolean;
   hasPrevPage: boolean;
 }
+//--request-------------------
+export interface GetMessagesRequest {
+  chatId: ObjectId;
+  page?: number;
+  limit?: number;
+}
+
+export interface SearchSidebarRequest {
+  q?: string;
+  page?: number;
+  limit?: number;
+}
+
+//-----------------response----------
+export interface GetAllChatsResponse {
+  message: string;
+  data: Chat[];
+}
 
 export interface GetMessagesResponse {
   message: string;
   messages: Messages[];
-  pagination:Pagination;
+  pagination: Pagination;
+}
+
+//---------seachuser--------------
+export type SearchUser = UserSummary;
+
+export interface SearchGroup {
+  _id: ObjectId;
+  isGroup: true;
+
+  groupName: string;
+  groupImage: string;
+
+  members: ChatMember[];
+  admins: ChatMember[];
+
+  createdBy: ObjectId;
+  lastMessage?: LastMessage | null;
+
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export interface SearchSidebarResponse {
+  message: string;
+  users: SearchUser[];
+  groups: SearchGroup[];
+  pagination: {
+    users: Pagination;
+    groups: Pagination;
+  };
+}
+
+export interface PrivateChat {
+  _id: ObjectId;
+  isGroup: false;
+  members: ChatMember[];
+  groupName: null;
+  groupImage?: string | null;
+  admins: ObjectId[];
+  lastMessage: LastMessage | null;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export interface GetOrCreatePrivateChatResponse {
+  message: string;
+  chat: PrivateChat;
 }

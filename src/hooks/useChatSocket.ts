@@ -1,61 +1,131 @@
+
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { getSocket } from "@/services/socket.service";
 import { useChatStore } from "@/stores/chat.store";
 import { Messages } from "@/types/chat.types";
 import { useAuth } from "./useAuth";
 
-export const useChatSocket = (chatId?: string) => {
-  const { setMessages, selectedChatId } = useChatStore();
-  const currentRoomRef = useRef<string | null>(null);
-  const { token } = useAuth();
+export const useChatSocket = () => {
+  const { user, token } = useAuth();
 
-  // ---- join chat room ----
+  const {
+ 
+     
+    setOnlineUsers,
+      addChat,
+    
+  } = useChatStore();
+
   useEffect(() => {
-    console.log("i run");
-    if (!token) return;
-
+  if (!token) {
     const socket = getSocket();
-    if (!socket || !chatId) return;
-
-    const joinRoom = () => {
-      if (currentRoomRef.current === chatId) return;
-
-      socket.emit("joinChat", chatId);
-      currentRoomRef.current = chatId;
-      console.log("joined room:", chatId);
-    };
-
-    if (socket.connected) {
-      joinRoom();
-    } else {
-      socket.on("connect", joinRoom);
+    if (socket) {
+      socket.disconnect();
     }
+    return;
+  }
+}, [token]);
 
-    return () => {
-      socket.off("connect", joinRoom);
-    };
-  }, [chatId, token, selectedChatId]);
-
-  // ---- receive messages ----
   useEffect(() => {
     const socket = getSocket();
-    if (!socket || !chatId) return;
+    if (!socket || !user?.id) return;
 
-    const handleNewMessage = (message: Messages) => {
-      if (message.chatId !== chatId) return;
+    const handleMessage = (message: Messages) => {
+ 
+      if (message.sender._id !== user.id) {
+        socket.emit("messageDelivered", { messageId: message._id });
+      }
+const normalizedChatId =
+  typeof message.chatId === "object"
+    ? message.chatId
+    : String(message.chatId);
 
-      setMessages((prev) => {
-        if (prev.some((m) => m._id === message._id)) return prev;
-        return [...prev, message];
+      useChatStore.getState().addMessagesByChat(message.chatId,message)
+      useChatStore.getState().updateLastMessage(message.chatId, {
+        _id: message._id,
+        sender: message.sender._id,
+        text: message.text,
+        messageType: message.messageType,
+        mediaUrl: message.mediaUrl ?? null,
+        createdAt: message.createdAt,
       });
+   
     };
 
-    socket.on("chat", handleNewMessage);
+    socket.on("chat", handleMessage);
+
+
+    socket.on("messageDeliveredUpdate", ({ chatId,messageId, userId }) => {
+      console.log("DELIVERED");
+       useChatStore
+      .getState()
+      .updateMessageDelivered(chatId, messageId, userId);
+ 
+    });
+
+
+    socket.on("messagesSeenUpdate", ({ chatId,messageId, viewer }) => {
+      console.log("SEEN");
+      
+   useChatStore
+      .getState()
+      .updateMessageSeen(chatId, messageId, viewer.id);
+ 
+
+ 
+    });
 
     return () => {
-      socket.off("chat", handleNewMessage);
+      socket.off("chat", handleMessage);
+      socket.off("messageDeliveredUpdate");
+      socket.off("messagesSeenUpdate");
     };
-  }, [chatId, setMessages]);
+  }, [user?.id]);
+
+  useEffect(() => {
+  const socket = getSocket();
+  if (!socket || !user?.id) return;
+
+  const { messagesByChat } = useChatStore.getState();
+
+  Object.values(messagesByChat).forEach((chat) => {
+    chat.messages.forEach((m) => {
+      if (
+        m.sender._id !== user.id &&
+        !m.deliveredTo.includes(user.id)
+      ) {
+        socket.emit("messageDelivered", { messageId: m._id });
+      }
+    });
+  });
+}, [user?.id,useChatStore.getState().messagesByChat]);
+
+ //------------ new chat--------------------
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    socket.on("online_users", (users: string[]) => {
+      setOnlineUsers(users);
+    });
+
+    socket.on("new_chat", (chat) => {
+     
+      addChat(chat);
+      socket.emit("joinChat", chat._id);
+    });
+
+    socket.on("group_created", (group) => {
+     addChat(group);
+      socket.emit("joinChat", group._id);
+    });
+
+    return () => {
+      socket.off("online_users");
+      socket.off("new_chat");
+      socket.off("group_created");
+    };
+  }, []);
 };
