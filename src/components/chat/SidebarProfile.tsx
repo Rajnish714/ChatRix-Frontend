@@ -23,13 +23,15 @@ export default function SidebarProfile({
       className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100"
     >
       <div className="relative">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={profilePic ?? "/assets/profile.png"}
+          src={profilePic ?? "/assets/user-rollback.png"}
           width={36}
           height={36}
           className="rounded-full object-cover"
           alt="profile"
         />
+        
 
         {isOnline && (
           <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-white" />

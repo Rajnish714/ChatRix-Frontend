@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -10,12 +9,19 @@ import { useChatSocket } from "@/hooks/useChatSocket";
 import SidebarProfile from "@/components/chat/SidebarProfile";
 import SearchSidebarUser from "@/components/chat/SearchSidebarUser";
 import { LogoutButton } from "@/components/ui/LogoutBTN";
+import { usePathname } from "next/navigation";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
   const { user } = useAuth();
   const myId = user?.id;
 
+  const pathname = usePathname();
+  const isChatPage = pathname.startsWith("/dashboard/chat");
   const { getAllChat, chats } = useChat();
   const { onlineUsers } = useChatStore();
 
@@ -29,9 +35,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="h-screen flex">
-      <aside className="w-64 border-r flex flex-col">
-        <div className="p-4 flex justify-between">
-          <span>ChatRix</span>
+      {/* ================= DESKTOP SIDEBAR ================= */}
+      <aside className="hidden md:flex w-64 border-r flex-col">
+        <div className="p-4 flex justify-between items-center">
+          <span className="font-bold">ChatRix</span>
           <LogoutButton />
         </div>
 
@@ -50,20 +57,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 ? chat.members.find((m) => m._id !== myId)
                 : null;
 
-              return (
+                return (
                 <SidebarProfile
                   key={chat._id}
                   title={chat.isGroup ? chat.groupName : other?.username}
-                  profilePic={chat.isGroup ? chat.groupImage : other?.profilePic}
+                  profilePic={
+                    chat.isGroup ? chat.groupImage : other?.profilePic
+                  }
                   isGroup={chat.isGroup}
                   isOnline={
                     !chat.isGroup &&
                     !!other?._id &&
                     onlineUsers.includes(other._id)
                   }
-                  onClick={() =>
-                    router.push(`/dashboard/chat/${chat._id}`)
-                  }
+                  onClick={() => router.push(`/dashboard/chat/${chat._id}`)}
                 />
               );
             })}
@@ -71,7 +78,64 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
       </aside>
 
-      <main className="flex-1">{children}</main>
+     
+      <main className="flex-1">
+       
+        <div className="md:hidden h-full">
+          {isChatPage ? (
+          
+            children
+          ) : (
+          
+            <div className="h-full flex flex-col">
+             
+              <div className="px-4 py-3 border-b flex items-center justify-between">
+                <span className="font-bold text-lg">ChatRix</span>
+
+                <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white">
+                  {user?.username?.[0]?.toUpperCase() ?? "U"}
+                </div>
+              </div>
+
+              {/* Mobile search */}
+              <SearchSidebarUser
+                onSearchStart={() => setIsSearching(true)}
+                onSearchEnd={() => {
+                  setIsSearching(false);
+                  getAllChat();
+                }}
+              />
+
+              {/* Scrollable chat list */}
+              {!isSearching && (
+                <div className="flex-1 overflow-y-auto">
+                  {chats.map((chat) => {
+                    const title = chat.isGroup
+                      ? chat.groupName
+                      : chat.members.find((m) => m._id !== myId)?.username;
+                      
+
+                    return (
+                      <div
+                        key={chat._id}
+                        onClick={() =>
+                          router.push(`/dashboard/chat/${chat._id}`)
+                        }
+                        className="px-4 py-3 border-b cursor-pointer"
+                      >
+                        {title}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ========== DESKTOP CHAT PAGE ========== */}
+        <div className="hidden md:block h-full">{children}</div>
+      </main>
     </div>
   );
 }

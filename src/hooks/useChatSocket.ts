@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect } from "react";
@@ -10,39 +9,28 @@ import { useAuth } from "./useAuth";
 export const useChatSocket = () => {
   const { user, token } = useAuth();
 
-  const {
- 
-     
-    setOnlineUsers,
-      addChat,
-    
-  } = useChatStore();
+  const { setOnlineUsers, addChat } = useChatStore();
 
   useEffect(() => {
-  if (!token) {
-    const socket = getSocket();
-    if (socket) {
-      socket.disconnect();
+    if (!token) {
+      const socket = getSocket();
+      if (socket) {
+        socket.disconnect();
+      }
+      return;
     }
-    return;
-  }
-}, [token]);
+  }, [token]);
 
   useEffect(() => {
     const socket = getSocket();
     if (!socket || !user?.id) return;
 
     const handleMessage = (message: Messages) => {
- 
       if (message.sender._id !== user.id) {
         socket.emit("messageDelivered", { messageId: message._id });
       }
-const normalizedChatId =
-  typeof message.chatId === "object"
-    ? message.chatId
-    : String(message.chatId);
 
-      useChatStore.getState().addMessagesByChat(message.chatId,message)
+      useChatStore.getState().addMessagesByChat(message.chatId, message);
       useChatStore.getState().updateLastMessage(message.chatId, {
         _id: message._id,
         sender: message.sender._id,
@@ -51,30 +39,19 @@ const normalizedChatId =
         mediaUrl: message.mediaUrl ?? null,
         createdAt: message.createdAt,
       });
-   
     };
 
     socket.on("chat", handleMessage);
 
-
-    socket.on("messageDeliveredUpdate", ({ chatId,messageId, userId }) => {
+    socket.on("messageDeliveredUpdate", ({ chatId, messageId, userId }) => {
       console.log("DELIVERED");
-       useChatStore
-      .getState()
-      .updateMessageDelivered(chatId, messageId, userId);
- 
+      useChatStore.getState().updateMessageDelivered(chatId, messageId, userId);
     });
 
-
-    socket.on("messagesSeenUpdate", ({ chatId,messageId, viewer }) => {
+    socket.on("messagesSeenUpdate", ({ chatId, messageId, userId }) => {
       console.log("SEEN");
-      
-   useChatStore
-      .getState()
-      .updateMessageSeen(chatId, messageId, viewer.id);
- 
 
- 
+      useChatStore.getState().updateMessageSeen(chatId, messageId, userId);
     });
 
     return () => {
@@ -85,24 +62,22 @@ const normalizedChatId =
   }, [user?.id]);
 
   useEffect(() => {
-  const socket = getSocket();
-  if (!socket || !user?.id) return;
+    const socket = getSocket();
+    if (!socket || !user?.id) return;
 
-  const { messagesByChat } = useChatStore.getState();
+    const { messagesByChat } = useChatStore.getState();
 
-  Object.values(messagesByChat).forEach((chat) => {
-    chat.messages.forEach((m) => {
-      if (
-        m.sender._id !== user.id &&
-        !m.deliveredTo.includes(user.id)
-      ) {
-        socket.emit("messageDelivered", { messageId: m._id });
-      }
+    Object.values(messagesByChat).forEach((chat) => {
+      chat.messages.forEach((m) => {
+        if (m.sender._id !== user.id && !m.deliveredTo.includes(user.id)) {
+          socket.emit("messageDelivered", { messageId: m._id });
+        }
+      });
     });
-  });
-}, [user?.id,useChatStore.getState().messagesByChat]);
+  }, [user?.id]); //useChatStore.getState().messagesByCha  iff code breaks add this in dependency of this useEffect
 
- //------------ new chat--------------------
+  //------------ new chat and create group socket--------------------
+
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
@@ -112,13 +87,12 @@ const normalizedChatId =
     });
 
     socket.on("new_chat", (chat) => {
-     
       addChat(chat);
       socket.emit("joinChat", chat._id);
     });
 
     socket.on("group_created", (group) => {
-     addChat(group);
+      addChat(group);
       socket.emit("joinChat", group._id);
     });
 
@@ -127,5 +101,6 @@ const normalizedChatId =
       socket.off("new_chat");
       socket.off("group_created");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

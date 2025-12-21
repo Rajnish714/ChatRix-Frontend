@@ -42,7 +42,7 @@ interface ChatStore {
   ) => void;
 }
 
-export const useChatStore = create<ChatStore>((set, get) => ({
+export const useChatStore = create<ChatStore>((set) => ({
   chats: [],
 
   messagesByChat: {},

@@ -12,10 +12,7 @@ interface Props {
   onSearchEnd?: () => void;
 }
 
-export default function SearchSidebarUser({
-  onSearchStart,
-  onSearchEnd,
-}: Props) {
+export default function SearchSidebarUser({ onSearchEnd }: Props) {
   const router = useRouter();
   const { searchSidebarUsers } = useChat();
   const chats = useChatStore((s) => s.chats);
@@ -26,6 +23,34 @@ export default function SearchSidebarUser({
   const [groups, setGroups] = useState<SearchGroup[]>([]);
 
   const debounced = useDebounce(query, 400);
+
+  // useEffect(() => {
+  //   if (!debounced.trim()) {
+  //     setUsers([]);
+  //     setGroups([]);
+  //     return;
+  //   }
+
+  //   let cancelled = false;
+
+  //   const run = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const res = await searchSidebarUsers({ q: debounced });
+  //       if (!cancelled) {
+  //         setUsers(res.users);
+  //         setGroups(res.groups);
+  //       }
+  //     } finally {
+  //       if (!cancelled) setLoading(false);
+  //     }
+  //   };
+
+  //   run();
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [debounced]);
 
   useEffect(() => {
     if (!debounced.trim()) {
@@ -53,26 +78,21 @@ export default function SearchSidebarUser({
     return () => {
       cancelled = true;
     };
-  }, [debounced]);
+  }, [debounced, searchSidebarUsers]);
 
- 
   const handleUserClick = (u: SearchUser) => {
-  const existingChat = chats.find(
-    (c) =>
-      !c.isGroup &&
-      c.members.some((m) => m._id === u._id)
-  );
-  setQuery("");      
-  onSearchEnd?.();   
-
-  if (existingChat) {
-    router.push(`/dashboard/chat/${existingChat._id}`);
-  } else {
-    router.push(
-      `/dashboard/chat/new?userId=${u._id}&username=${u.username}`
+    const existingChat = chats.find(
+      (c) => !c.isGroup && c.members.some((m) => m._id === u._id)
     );
-  }
-};
+    setQuery("");
+    onSearchEnd?.();
+
+    if (existingChat) {
+      router.push(`/dashboard/chat/${existingChat._id}`);
+    } else {
+      router.push(`/dashboard/chat/new?userId=${u._id}&username=${u.username}`);
+    }
+  };
 
   return (
     <div className="p-2 border-b">
@@ -83,19 +103,29 @@ export default function SearchSidebarUser({
         placeholder="Search users or groups"
       />
 
-      {loading && (
-        <p className="text-xs mt-1 text-gray-400">
-          Searching...
-        </p>
-      )}
+      {loading && <p className="text-xs mt-1 text-gray-400">Searching...</p>}
 
       {users.map((u) => (
         <div
           key={u._id}
           onClick={() => handleUserClick(u)}
-          className="p-2 cursor-pointer hover:bg-gray-100"
+          className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100"
         >
-          {u.username}
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={u.profilePic ?? "/assets/user-rollback.png"}
+              width={36}
+              height={36}
+              className="rounded-full object-cover"
+              alt="profile"
+            />
+           
+          </div>
+
+          <div className="flex flex-col min-w-0">
+            <span className="font-medium truncate">{u.username}</span>
+          </div>
         </div>
       ))}
 
@@ -103,9 +133,26 @@ export default function SearchSidebarUser({
         <div
           key={g._id}
           onClick={() => router.push(`/dashboard/chat/${g._id}`)}
-          className="p-2 cursor-pointer hover:bg-gray-100"
+          className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100"
         >
-          {g.groupName}
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={g.groupImage ?? "/assets/group-rollback.png"}
+              width={36}
+              height={36}
+              className="rounded-full object-cover"
+              alt="profile"
+            />
+
+            {/* {isOnline && (
+          <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-white" />
+        )} */}
+          </div>
+
+          <div className="flex flex-col min-w-0">
+            <span className="font-medium truncate">{g.groupName}</span>
+          </div>
         </div>
       ))}
     </div>
