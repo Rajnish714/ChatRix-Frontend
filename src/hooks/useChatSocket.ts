@@ -10,7 +10,7 @@ export const useChatSocket = () => {
   const { user, token } = useAuth();
 
   const { setOnlineUsers, addChat } = useChatStore();
-
+ const socket = getSocket();
   useEffect(() => {
     if (!token) {
       const socket = getSocket();
@@ -22,10 +22,11 @@ export const useChatSocket = () => {
   }, [token]);
 
   useEffect(() => {
-    const socket = getSocket();
+   
     if (!socket || !user?.id) return;
 
     const handleMessage = (message: Messages) => {
+  
       if (message.sender._id !== user.id) {
         socket.emit("messageDelivered", { messageId: message._id });
       }
@@ -59,10 +60,10 @@ export const useChatSocket = () => {
       socket.off("messageDeliveredUpdate");
       socket.off("messagesSeenUpdate");
     };
-  }, [user?.id]);
+  }, [socket,user?.id]);
 
   useEffect(() => {
-    const socket = getSocket();
+ 
     if (!socket || !user?.id) return;
 
     const { messagesByChat } = useChatStore.getState();
@@ -78,29 +79,28 @@ export const useChatSocket = () => {
 
   //------------ new chat and create group socket--------------------
 
+
   useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
+  if (!socket) return;
 
-    socket.on("online_users", (users: string[]) => {
-      setOnlineUsers(users);
-    });
+  socket.on("online_users", (users: string[]) => {
+    setOnlineUsers(users);
+  });
 
-    socket.on("new_chat", (chat) => {
-      addChat(chat);
-      socket.emit("joinChat", chat._id);
-    });
+  socket.on("new_chat", (chat) => {
+    addChat(chat);
+    socket.emit("joinChat", chat._id);
+  });
 
-    socket.on("group_created", (group) => {
-      addChat(group);
-      socket.emit("joinChat", group._id);
-    });
+  socket.on("group_created", (group) => {
+    addChat(group);
+    socket.emit("joinChat", group._id);
+  });
 
-    return () => {
-      socket.off("online_users");
-      socket.off("new_chat");
-      socket.off("group_created");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  return () => {
+    socket.off("online_users");
+    socket.off("new_chat");
+    socket.off("group_created");
+  };
+}, [socket]); 
 };

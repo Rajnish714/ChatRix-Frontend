@@ -102,7 +102,7 @@ export default function ChatPage() {
 
       const cache = useChatStore.getState().messagesByChat[chatId];
 
-      if (!cache) {
+      if (!cache || !cache.hydrated) {
         setInitialLoading(true);
         await getMessages({ chatId, page: 1 });
         if (!cancelled) setInitialLoading(false);

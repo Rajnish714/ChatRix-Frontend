@@ -52,41 +52,6 @@ export default function ChatInput({ chatId, receiverUser }: Props) {
   return () => document.removeEventListener("mousedown", close);
 })
 
-  // const sendMessage = async () => {
-  //   const value = text.trim();
-  //   if (!value || !socketReady || sendingRef.current) return;
-
-  //   const socket = getSocket();
-  //   if (!socket) return;
-
-  //   sendingRef.current = true;
-
-  //   let activeChatId = chatId;
-
-  //   if (!activeChatId) {
-  //     if (!receiverUser) {
-  //       sendingRef.current = false;
-  //       return;
-  //     }
-
-  //     const chat =
-  //       await useChatService.getOrCreatePrivateChatIdRequest(
-  //         receiverUser._id
-  //       );
-
-  //     activeChatId = chat._id;
-  //     setSelectedChatId(activeChatId);
-  //    router.push(`/dashboard/chat/${activeChatId}`);
-  //   }
-
-  //   socket.emit("chat", {
-  //     chatId: activeChatId,
-  //     text: value, 
-  //   });
-
-  //   setText("");
-  //   sendingRef.current = false;
-  // };
 const sendMessage = async (payload: SendMessagePayload = {}) => {
   if (!socketReady || sendingRef.current) return;
 
