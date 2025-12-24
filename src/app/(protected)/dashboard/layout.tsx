@@ -10,6 +10,7 @@ import SidebarProfile from "@/components/chat/SidebarProfile";
 import SearchSidebarUser from "@/components/chat/SearchSidebarUser";
 import { LogoutButton } from "@/components/ui/LogoutBTN";
 import { usePathname } from "next/navigation";
+import { getSocket } from "@/services/socket.service";
 
 export default function DashboardLayout({
   children,
@@ -19,23 +20,40 @@ export default function DashboardLayout({
   const router = useRouter();
   const { user } = useAuth();
   const myId = user?.id;
-
+ const socketReady = useChatStore((s) => s.socketReady);
   const pathname = usePathname();
   const isChatPage = pathname.startsWith("/dashboard/chat");
   const { getAllChat, chats } = useChat();
   const { onlineUsers } = useChatStore();
 
   const [isSearching, setIsSearching] = useState(false);
-
-  useChatSocket();
-
+ 
+ 
+ useChatSocket();
   useEffect(() => {
     getAllChat();
   }, [getAllChat]);
 
+useEffect(() => {
+  if (!socketReady || !myId || chats.length === 0) return;
+
+  const socket = getSocket();
+  if (!socket) return;
+
+  chats.forEach((chat) => {
+    const last = chat.lastMessage;
+    if (!last) return;
+ 
+    if (last.sender !== myId) {
+        socket.emit("messageDelivered", { messageId: last._id });
+    }
+    
+  });
+}, [socketReady, chats, myId]);
+
   return (
     <div className="h-screen flex">
-      {/* ================= DESKTOP SIDEBAR ================= */}
+      {/* Pc  */}
       <aside className="hidden md:flex w-64 border-r flex-col">
         <div className="p-4 flex justify-between items-center">
           <span className="font-bold">ChatRix</span>
@@ -97,7 +115,7 @@ export default function DashboardLayout({
                 </div>
               </div>
 
-              {/* Mobile search */}
+              {/* phone search */}
               <SearchSidebarUser
                 onSearchStart={() => setIsSearching(true)}
                 onSearchEnd={() => {
@@ -106,7 +124,7 @@ export default function DashboardLayout({
                 }}
               />
 
-              {/* Scrollable chat list */}
+              {/*  chat list */}
               {!isSearching && (
                 <div className="flex-1 overflow-y-auto">
                   {chats.map((chat) => {
@@ -133,7 +151,7 @@ export default function DashboardLayout({
           )}
         </div>
 
-        {/* ========== DESKTOP CHAT PAGE ========== */}
+        {/* pc chat page*/}
         <div className="hidden md:block h-full">{children}</div>
       </main>
     </div>

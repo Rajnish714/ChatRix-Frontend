@@ -119,20 +119,25 @@ export default function ChatPage() {
   }, [chatId]);
 
   useEffect(() => {
-    const socket = getSocket();
-    if (!socket || !chatId || !user?.id) return;
+  const socket = getSocket();
+  if (!socket || !chatId || !user?.id) return;
 
-    activeMessages.forEach((m) => {
-      if (
-        m.sender._id !== user.id &&
-        !m.seenBy.includes(user.id) &&
-        !seenRef.current.has(m._id)
-      ) {
-        seenRef.current.add(m._id);
-        socket.emit("messageSeen", { messageId: m._id });
-      }
-    });
-  }, [chatId, activeMessages, user?.id]);
+  activeMessages.forEach((m) => {
+    if (m.sender._id === user.id) return;
+
+    if (!m.deliveredTo.includes(user.id)) {
+      socket.emit("messageDelivered", { messageId: m._id });
+    }
+
+    if (
+      !m.seenBy.includes(user.id) &&
+      !seenRef.current.has(m._id)
+    ) {
+      seenRef.current.add(m._id);
+      socket.emit("messageSeen", { messageId: m._id });
+    }
+  });
+}, [chatId, activeMessages, user?.id]);
 
   return (
     <div key={chatId} className="h-full flex flex-col">

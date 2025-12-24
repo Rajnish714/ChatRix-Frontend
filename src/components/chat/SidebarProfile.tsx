@@ -17,6 +17,9 @@ export default function SidebarProfile({
   isOnline,
   onClick,
 }: SidebarProfileProps) {
+
+
+  
   return (
     <div
       onClick={onClick}

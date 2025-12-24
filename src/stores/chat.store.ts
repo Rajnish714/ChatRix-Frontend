@@ -17,7 +17,6 @@ interface ChatStore {
   onlineUsers: string[];
 
   setMessagesByChat: (chatId: string, response: GetMessagesResponse) => void;
-
   addMessagesByChat: (chatId: string, message: Messages) => void;
 
   setOnlineUsers: (users: string[]) => void;
