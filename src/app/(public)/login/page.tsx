@@ -6,7 +6,7 @@ export default function LoginPage(){
  
     
 
-    return(<div>
+    return(<div className="ui-elevated"   >
     <LoginForm/>
       
     </div>)

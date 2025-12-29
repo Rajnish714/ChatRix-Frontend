@@ -23,7 +23,7 @@ export default function SidebarProfile({
   return (
     <div
       onClick={onClick}
-      className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100"
+      className="flex items-center gap-3 px-4 py-2 cursor-pointer  ui-hover "
     >
       <div className="relative">
         {/* eslint-disable-next-line @next/next/no-img-element */}

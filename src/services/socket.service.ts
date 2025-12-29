@@ -2,10 +2,8 @@
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
- console.log("SOCKET MODULE LOADED", socket);
 export function connectSocket(token: string) {
- 
-  if (socket) return socket;
+   if (socket) return socket;
 
   const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL!;
   if (!SOCKET_URL) {

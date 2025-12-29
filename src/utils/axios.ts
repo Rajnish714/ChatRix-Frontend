@@ -22,7 +22,7 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    // ❌ If refresh itself fails → logout
+ 
     if (original?.url?.includes("/auth/refresh-token")) {
       useAuthStore.getState().logout();
       return Promise.reject(error);

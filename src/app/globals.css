@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+/* ---------- LIGHT THEME ---------- */
+:root {
+  --bg-surface: 255 255 255;        /* white */
+  --bg-elevated: 249 250 251;       /* gray-50 */
+  --text-primary: 17 24 39;         /* gray-900 */
+  --border-color: 209 213 219;      /* gray-300 */
+
+  --hover-overlay: 0 0 0 / 0.05;    /* black 5% */
+}
+
+/* ---------- DARK THEME ---------- */
+html.dark {
+  --bg-surface: 17 24 39;           /* gray-900 */
+  --bg-elevated: 31 41 55;          /* gray-800 */
+  --text-primary: 243 244 246;      /* gray-100 */
+  --border-color: 55 65 81;         /* gray-700 */
+
+  --hover-overlay: 255 255 255 / 0.1;
+}
+
+/* ---------- BASE ---------- */
+html,
+body {
+  background-color: rgb(var(--bg-surface));
+  color: rgb(var(--text-primary));
+}
+
+/* ---------- UI UTILITY CLASSES ---------- */
+
+
+.ui-surface {
+  background-color: rgb(var(--bg-surface));
+  color: rgb(var(--text-primary));
+}
+
+.ui-elevated {
+  background-color: rgb(var(--bg-elevated));
+  color: rgb(var(--text-primary));
+}
+
+/* text */
+.ui-text {
+  color: rgb(var(--text-primary));
+}
+
+/* borders */
+.ui-border {
+  border: 1px solid rgb(var(--border-color));
+}
+
+/* hover */
+.ui-hover:hover {
+  background-color: rgb(var(--hover-overlay));
+}

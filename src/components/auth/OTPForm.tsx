@@ -54,7 +54,7 @@ export function OTPForm({
         value={otp}
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Enter 6-digit OTP"
-        className={`w-full rounded-lg border border-gray-300 px-4 py-2 text-center
+        className={`w-full ui-elevated rounded-lg border border-gray-300 px-4 py-2 text-center
           tracking-widest text-sm focus:outline-none focus:ring-2 focus:ring-blue-500
           ${inputClassName}`}
       />
@@ -63,7 +63,7 @@ export function OTPForm({
         <button
           type="submit"
           disabled={otp.length !== 6}
-          className={`w-full rounded-lg bg-blue-600 py-2 text-white font-medium
+          className={`w-full rounded-lg bg-blue-600 py-2 font-medium
             hover:bg-blue-700 transition disabled:opacity-60
             ${buttonClassName}`}
         >

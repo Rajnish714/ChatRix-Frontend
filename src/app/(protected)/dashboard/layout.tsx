@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useChatSocket } from "@/hooks/useChatSocket";
 import SidebarProfile from "@/components/chat/SidebarProfile";
 import SearchSidebarUser from "@/components/chat/SearchSidebarUser";
-import { LogoutButton } from "@/components/ui/LogoutBTN";
+import MoreMenu from "@/components/ui/MoreMenu";
 import { usePathname } from "next/navigation";
 import { getSocket } from "@/services/socket.service";
 
@@ -19,7 +19,7 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const { user } = useAuth();
-  const myId = user?.id;
+  const myId = user?._id;
  const socketReady = useChatStore((s) => s.socketReady);
   const pathname = usePathname();
   const isChatPage = pathname.startsWith("/dashboard/chat");
@@ -57,7 +57,7 @@ useEffect(() => {
       <aside className="hidden md:flex w-64 border-r flex-col">
         <div className="p-4 flex justify-between items-center">
           <span className="font-bold">ChatRix</span>
-          <LogoutButton />
+         <MoreMenu/>
         </div>
 
         <SearchSidebarUser
@@ -74,14 +74,14 @@ useEffect(() => {
               const other = !chat.isGroup
                 ? chat.members.find((m) => m._id !== myId)
                 : null;
+             const profilePic=  chat.isGroup ? chat.groupImage : other?.profilePic
+                  
 
                 return (
                 <SidebarProfile
                   key={chat._id}
                   title={chat.isGroup ? chat.groupName : other?.username}
-                  profilePic={
-                    chat.isGroup ? chat.groupImage : other?.profilePic
-                  }
+                  profilePic={profilePic}
                   isGroup={chat.isGroup}
                   isOnline={
                     !chat.isGroup &&
@@ -109,10 +109,9 @@ useEffect(() => {
              
               <div className="px-4 py-3 border-b flex items-center justify-between">
                 <span className="font-bold text-lg">ChatRix</span>
-
-                <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white">
-                  {user?.username?.[0]?.toUpperCase() ?? "U"}
-                </div>
+             
+                  <MoreMenu/>
+               
               </div>
 
               {/* phone search */}
@@ -128,21 +127,26 @@ useEffect(() => {
               {!isSearching && (
                 <div className="flex-1 overflow-y-auto">
                   {chats.map((chat) => {
-                    const title = chat.isGroup
-                      ? chat.groupName
-                      : chat.members.find((m) => m._id !== myId)?.username;
-                      
-
-                    return (
-                      <div
-                        key={chat._id}
-                        onClick={() =>
-                          router.push(`/dashboard/chat/${chat._id}`)
-                        }
-                        className="px-4 py-3 border-b cursor-pointer"
-                      >
-                        {title}
+                       const other = !chat.isGroup
+                ? chat.members.find((m) => m._id !== myId)
+                : null;
+             const profilePic=  chat.isGroup ? chat.groupImage : other?.profilePic
+             const  isOnline= !chat.isGroup && !!other?._id &&  onlineUsers.includes(other._id)
+                  
+              return (
+                    <div  key={chat._id} className="border-b ">
+                   <SidebarProfile
+                      key={chat._id}
+                      title={chat.isGroup ? chat.groupName : other?.username}
+                      profilePic={profilePic}
+                      isGroup={chat.isGroup}
+                      isOnline={
+                      isOnline
+                      }
+                      onClick={() => router.push(`/dashboard/chat/${chat._id}`)}
+                      />
                       </div>
+                
                     );
                   })}
                 </div>

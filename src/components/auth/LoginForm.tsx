@@ -34,9 +34,9 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-center text-gray-800">
+    <div className="min-h-screen flex items-center justify-center ui-elevated px-4">
+      <div className="w-full max-w-md ui-elevated rounded-xl shadow-lg p-6 space-y-6">
+        <h1 className="text-2xl font-semibold text-center ">
           Login
         </h1>
 

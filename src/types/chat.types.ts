@@ -94,7 +94,7 @@ export interface GetMessagesRequest {
   limit?: number;
 }
 
-export interface SearchSidebarRequest {
+export interface SearchRequest {
   q?: string;
   page?: number;
   limit?: number;
@@ -157,4 +157,17 @@ export interface PrivateChat {
 export interface GetOrCreatePrivateChatResponse {
   message: string;
   chat: PrivateChat;
+}
+
+export interface CreateGroupRequest {
+  groupName: string;             
+  members: string[];        
+ imageUrl?: string | null;     
+}
+
+export interface SearchUsersResponse {
+  message: string;
+  users: SearchUser[];
+  hasMore: boolean;
+  pagination: Pagination;
 }

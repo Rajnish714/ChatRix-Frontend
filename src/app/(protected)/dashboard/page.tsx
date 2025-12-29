@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 export default function DashboardPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const myUserId = user?.id;
+  const myUserId = user?._id;
   const { chats, getAllChat } = useChat();
 
   useEffect(() => {

@@ -109,7 +109,7 @@ export default function SearchSidebarUser({ onSearchEnd }: Props) {
         <div
           key={u._id}
           onClick={() => handleUserClick(u)}
-          className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100"
+          className="flex items-center gap-3 px-4 py-2 cursor-pointer ui-hover"
         >
           <div className="relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -133,7 +133,7 @@ export default function SearchSidebarUser({ onSearchEnd }: Props) {
         <div
           key={g._id}
           onClick={() => router.push(`/dashboard/chat/${g._id}`)}
-          className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100"
+          className="flex items-center gap-3 px-4 py-2 cursor-pointer ui-hover"
         >
           <div className="relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}

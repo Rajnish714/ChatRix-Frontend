@@ -120,24 +120,24 @@ export default function ChatPage() {
 
   useEffect(() => {
   const socket = getSocket();
-  if (!socket || !chatId || !user?.id) return;
+  if (!socket || !chatId || !user?._id) return;
 
   activeMessages.forEach((m) => {
-    if (m.sender._id === user.id) return;
+    if (m.sender._id === user._id) return;
 
-    if (!m.deliveredTo.includes(user.id)) {
+    if (!m.deliveredTo.includes(user._id)) {
       socket.emit("messageDelivered", { messageId: m._id });
     }
 
     if (
-      !m.seenBy.includes(user.id) &&
+      !m.seenBy.includes(user._id) &&
       !seenRef.current.has(m._id)
     ) {
       seenRef.current.add(m._id);
       socket.emit("messageSeen", { messageId: m._id });
     }
   });
-}, [chatId, activeMessages, user?.id]);
+}, [chatId, activeMessages, user?._id]);
 
   return (
     <div key={chatId} className="h-full flex flex-col">
@@ -160,7 +160,7 @@ export default function ChatPage() {
         )}
 
         {activeMessages.map((msg) => {
-          const isMe = msg.sender._id === user?.id;
+          const isMe = msg.sender._id === user?._id;
 
           return (
             <div
