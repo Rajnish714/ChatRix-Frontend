@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { useChatStore } from "@/stores/chat.store";
 import { useChatService } from "@/services/chat.service";
-import { Chat, CreateGroupRequest, GetMessagesRequest,SearchRequest, SearchSidebarResponse, SearchUsersResponse } from "@/types/chat.types";
+import { AddGroupMembersBody, Chat, CreateGroupRequest, GetMessagesRequest,SearchRequest, SearchUsersResponse } from "@/types/chat.types";
 import { useAuthStore } from "@/stores/auth.store";
 
 export const useChat = () => {
@@ -104,7 +104,7 @@ const createGroup = useCallback(
     setLoading(true);
 
     try {
-      console.log(payload);
+     
       await useChatService.createGroupRequest(payload);
 
   
@@ -202,6 +202,49 @@ const getOrCreatePrivateChat = useCallback(
     },
     [user, addChat]
   );
+
+  const leaveGroup = useCallback(
+  async (chatId: string) => {
+
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      return await useChatService.leaveGroupRequest(chatId);
+    } catch (err) {
+      setError(getErrorMessage(err));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  },
+  []
+);
+
+const addGroupMembers = useCallback(
+  async (chatId: string, body: AddGroupMembersBody) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const updatedGroup =
+        await useChatService.addMemberRequest(
+          { chatId },
+          body
+        );
+
+      useChatStore
+        .getState()
+        .addGroupMembers(updatedGroup);
+
+      return updatedGroup;
+    } finally {
+      setLoading(false);
+    }
+  },
+  []
+);
   return {
     chats,
     selectedChatId,
@@ -214,7 +257,8 @@ const getOrCreatePrivateChat = useCallback(
     searchSidebarUsers,
     searchUsers,
     getOrCreatePrivateChat,
-    createGroup
-
+    createGroup,
+    leaveGroup,
+    addGroupMembers 
   };
 };

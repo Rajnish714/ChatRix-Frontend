@@ -1,7 +1,7 @@
 "use client";
 
 import { useUIStore } from "@/stores/ui.store";
-import CreateGroupModal from "@/components/ui/CreateGroupModal/CreateGroupModal";
+import CreateGroupModal from "../../Modals/chat/CreateGroupModal";
 
 export default function ClientLayout({
   children,

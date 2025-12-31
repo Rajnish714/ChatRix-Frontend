@@ -52,11 +52,12 @@ useEffect(() => {
 }, [socketReady, chats, myId]);
 
   return (
-    <div className="h-screen flex">
-      {/* Pc  */}
+    <div className="h-dvh flex overflow-x-hidden">
+      {/* Pc  */}  
       <aside className="hidden md:flex w-64 border-r flex-col">
+         
         <div className="p-4 flex justify-between items-center">
-          <span className="font-bold">ChatRix</span>
+          <span className="font-bold"> ChattRix </span>
          <MoreMenu/>
         </div>
 
@@ -97,7 +98,7 @@ useEffect(() => {
       </aside>
 
      
-      <main className="flex-1">
+      <main className="flex-1 min-w-0 overflow-x-hidden">
        
         <div className="md:hidden h-full">
           {isChatPage ? (

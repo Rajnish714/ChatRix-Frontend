@@ -9,6 +9,7 @@ interface CacheChat {
 }
 
 interface ChatStore {
+  
   chats: Chat[];
   messagesByChat: Record<string, CacheChat>;
   selectedChatId: string | null;
@@ -24,6 +25,9 @@ interface ChatStore {
 
   setChats: (chats: Chat[]) => void;
   addChat: (chat: Chat) => void;
+  addGroupMembers(chat: Chat): void;
+  removeChat: (chatId: string) => void;
+ removeGroupMember: (chatId: string, userId: string) => void;
 
   updateLastMessage: (chatId: string, lastMessage: Chat["lastMessage"]) => void;
 
@@ -59,6 +63,44 @@ export const useChatStore = create<ChatStore>((set) => ({
         ? state.chats
         : [chat, ...state.chats],
     })),
+
+    removeChat: (chatId) =>
+  set((state) => ({
+    chats: state.chats.filter((c) => c._id !== chatId),
+    selectedChatId:
+      state.selectedChatId === chatId ? null : state.selectedChatId,
+    messagesByChat: Object.fromEntries(
+      Object.entries(state.messagesByChat).filter(
+        ([id]) => id !== chatId
+      )
+    ),
+  })),
+
+  addGroupMembers: (chat: Chat) =>
+  set((state) => ({
+    chats: state.chats.map((c) =>
+      c._id === chat._id ? chat : c
+    ),
+  })),
+  
+  removeGroupMember: (chatId, userId) =>
+  set((state) => ({
+    chats: state.chats.map((chat) =>
+      chat._id === chatId
+        ? {
+            ...chat,
+            members: chat.members.filter(
+              (m: string | { _id: string }) =>
+                typeof m === "string" ? m !== userId : m._id !== userId
+            ),
+            admins: chat.admins?.filter(
+              (a: string | { _id: string }) =>
+                typeof a === "string" ? a !== userId : a._id !== userId
+            ),
+          }
+        : chat
+    ),
+  })),
 
   updateLastMessage: (chatId, lastMessage) =>
     set((state) => ({
@@ -144,6 +186,7 @@ export const useChatStore = create<ChatStore>((set) => ({
       };
     }),
 
+
   updateMessageSeen: (chatId, messageId, viewerId) =>
     set((state) => {
       const chat = state.messagesByChat[chatId];
@@ -166,4 +209,5 @@ export const useChatStore = create<ChatStore>((set) => ({
         },
       };
     }),
-}));
+}))
+

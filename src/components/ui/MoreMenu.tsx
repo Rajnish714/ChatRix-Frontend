@@ -1,7 +1,7 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { LogoutButton } from "./LogoutBTN";
 import { useUIStore } from "@/stores/ui.store";
 import { useTheme } from "next-themes";
@@ -9,97 +9,110 @@ import { useTheme } from "next-themes";
 export default function MoreMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+
   const openCreateGroup = useUIStore((s) => s.openCreateGroup);
+  const openProfile = useUIStore((s) => s.openProfile);
+
   const { resolvedTheme, setTheme } = useTheme();
 
+  // Close on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () =>
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Avoid hydration issues
+  if (!resolvedTheme) return null;
+
   return (
-    <div className="relative text-center " ref={menuRef}>
+    <div className="relative z-50" ref={menuRef}>
       {/* Trigger */}
       <button
         onClick={() => setOpen((p) => !p)}
-        className="
-          p-2 rounded-full
-          ui-hover
-        "
+        aria-label="More options"
+        className="rounded-full p-2 ui-hover"
       >
         ⋮
       </button>
 
       {open && (
-        
         <div
           className="
-            absolute rounded-2xl right-0 mt-2 w-40
-          ui-elevated ui-border
-         
+            absolute right-0 mt-2 w-48
+            rounded-xl
+            ui-elevated ui-border
+            overflow-hidden
           "
         >
           {/* Profile */}
-          <button
+          <MenuItem
             onClick={() => {
-              router.push("/profile");
+              openProfile();
               setOpen(false);
             }}
-            className="
-              w-full  px-4 py-2
-           ui-hover
-            "
           >
             My Profile
-          </button>
+          </MenuItem>
 
           {/* Create group */}
-          <button
+          <MenuItem
             onClick={() => {
               openCreateGroup();
               setOpen(false);
             }}
-            className="
-              w-full  px-4 py-2
-           ui-hover
-            "
           >
             Add Group
-          </button>
+          </MenuItem>
+
+          {/* Divider */}
+          <div className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
           {/* Theme toggle */}
-          <button
+          <MenuItem
             onClick={() => {
               setTheme(resolvedTheme === "dark" ? "light" : "dark");
               setOpen(false);
             }}
-            className="
-              w-full  px-4 py-2
-           ui-hover
-            "
           >
-            {resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}
-          </button>
+            {resolvedTheme === "dark" ? "🌞 Light mode" : "🌙 Dark mode"}
+          </MenuItem>
+
+          {/* Divider */}
+          <div className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
           {/* Logout */}
-          <div
-            className="
-              px-4 py-2 text-red-600
-             ui-hover
-            "
-          >
+          <div className="px-3 py-2 text-red-600 ui-hover">
             <LogoutButton />
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+/* Reusable menu item */
+function MenuItem({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="
+        w-full px-4 py-2 text-left text-sm
+        ui-hover
+      "
+    >
+      {children}
+    </button>
   );
 }

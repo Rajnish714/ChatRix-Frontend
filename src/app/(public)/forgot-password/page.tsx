@@ -78,7 +78,7 @@ export default function ForgotPasswordPage(){
           <button
             onClick={handleResetPassword}
             disabled={!otp || !newPassword }
-             className="w-full rounded-lg bg-blue-600 py-2 text-white font-medium
+             className="w-full rounded-lg bg-blue-600 py-2 text-white font-medium mt-2
                      hover:bg-blue-700 transition disabled:opacity-60"
           >
             Reset Password

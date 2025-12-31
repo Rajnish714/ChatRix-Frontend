@@ -17,7 +17,7 @@ export const useAuthInitializer = () => {
         const user = await useAuthService.getMeRequest();
         setUser(user);
       } catch (err) {
-   console.log(err);
+   console.error(err);
         await logoutUser();
       } finally {
         

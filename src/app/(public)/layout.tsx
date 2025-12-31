@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect } from "react";
@@ -5,29 +6,52 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth.store";
 import { useTheme } from "next-themes";
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default function PublicLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
   const { token, isAuthloading } = useAuthStore();
   const { resolvedTheme, setTheme } = useTheme();
+
+
   useEffect(() => {
     if (!isAuthloading && token) {
       router.replace("/dashboard");
     }
-  }, [isAuthloading, token]);
+  }, [isAuthloading, token, router]);
 
-  if (isAuthloading || token) return <div><h1>redirecting</h1></div>;
 
-  return <>   <div> <button
-            onClick={() => {
-              setTheme(resolvedTheme === "dark" ? "light" : "dark");
-             
-            }}
-            className="
-             w-full text-right px-4 py-2
-             
-            "
-          >
-            {resolvedTheme === "dark" ? "Light Mode" : "Dark Mode"}
+  if (isAuthloading || !resolvedTheme) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Loading…
+      </div>
+    );
+  }
 
-          </button></div> {children}</>;
+  if (token) return null;
+
+  return (
+    <div className="relative min-h-screen  ui-elevated">
+     
+      <button
+        aria-label="Toggle theme"
+        onClick={() =>
+          setTheme(resolvedTheme === "dark" ? "light" : "dark")
+        }
+        className="absolute right-4 top-4 rounded-full border ui-evelated "
+      >
+        {resolvedTheme === "dark" ? "🌞" : "🌙"}
+      </button>
+
+     
+      <div className="flex min-h-screen items-center justify-center px-4">
+  <div className="w-full max-w-lg">
+    {children}
+  </div>
+</div>
+    </div>
+  );
 }

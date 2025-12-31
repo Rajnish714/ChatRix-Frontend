@@ -22,20 +22,17 @@ export default function LoginForm() {
       return;
     }
 
-    const loggedInUser = await loginUser({
+    await loginUser({
       email: cleanEmail,
       password: cleanPassword,
     });
 
-    if (loggedInUser) {
-      console.log("Logged in user:", loggedInUser);
-      // router.push("/dashboard"); // optional
-    }
+   
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center ui-elevated px-4">
-      <div className="w-full max-w-md ui-elevated rounded-xl shadow-lg p-6 space-y-6">
+      <div className="w-full max-w-lg ui-elevated rounded-xl shadow-lg p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-center ">
           Login
         </h1>

@@ -5,11 +5,16 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useChat } from "@/hooks/useChat";
 import { useChatStore } from "@/stores/chat.store";
-import ChatInput from "@/components/ChatInput";
+import ChatInput from "@/components/chat/ChatInput";
 import { getSocket } from "@/services/socket.service";
 import { Messages } from "@/types/chat.types";
 import Image from "next/image";
 import { Tick } from "@/components/ui/Tick";
+import { useUIStore } from "@/stores/ui.store";
+import GroupInfoModal from "@/components/Modals/chat/GroupInfoModal";
+import UserProfileModal from "@/components/Modals/profile/UserProfileInfo";
+import AddGroupMemberModal from "@/components/Modals/chat/AddGroupMemberModal";
+import MyProfileModal from "@/components/Modals/MyProfileModal";
 
 const EMPTY_MESSAGES: Messages[] = [];
 const TOP_THRESHOLD = 40;
@@ -18,7 +23,18 @@ export default function ChatPage() {
   const params = useParams<{ chatId?: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  const {
+    showGroupInfo,
+    openGroupInfo,
+    closeGroupInfo,
+    showUserProfile,
+    openUserProfile,
+    closeUserProfile,
+    showAddMember,
+    closeAddMember,
+    showProfile,
+    closeProfile
+  } = useUIStore();
   const chatId =
     params.chatId && params.chatId !== "new" ? params.chatId : null;
 
@@ -32,7 +48,8 @@ export default function ChatPage() {
       : null;
 
   const { user } = useAuth();
-  const { getMessages } = useChat();
+  const myId = user?._id;
+  const { getMessages, chats } = useChat();
 
   const setSelectedChatId = useChatStore((s) => s.setSelectedChatId);
 
@@ -48,6 +65,13 @@ export default function ChatPage() {
   const seenRef = useRef<Set<string>>(new Set());
 
   const [initialLoading, setInitialLoading] = useState(false);
+
+  const activeChat = chatId ? chats.find((c) => c._id === chatId) : null;
+
+  const otherUser =
+    activeChat && !activeChat.isGroup
+      ? activeChat.members.find((m) => m._id !== myId)
+      : null;
 
   const handleScroll = async () => {
     const el = containerRef.current;
@@ -119,25 +143,22 @@ export default function ChatPage() {
   }, [chatId]);
 
   useEffect(() => {
-  const socket = getSocket();
-  if (!socket || !chatId || !user?._id) return;
+    const socket = getSocket();
+    if (!socket || !chatId || !user?._id) return;
 
-  activeMessages.forEach((m) => {
-    if (m.sender._id === user._id) return;
+    activeMessages.forEach((m) => {
+      if (m.sender._id === user._id) return;
 
-    if (!m.deliveredTo.includes(user._id)) {
-      socket.emit("messageDelivered", { messageId: m._id });
-    }
+      if (!m.deliveredTo.includes(user._id)) {
+        socket.emit("messageDelivered", { messageId: m._id });
+      }
 
-    if (
-      !m.seenBy.includes(user._id) &&
-      !seenRef.current.has(m._id)
-    ) {
-      seenRef.current.add(m._id);
-      socket.emit("messageSeen", { messageId: m._id });
-    }
-  });
-}, [chatId, activeMessages, user?._id]);
+      if (!m.seenBy.includes(user._id) && !seenRef.current.has(m._id)) {
+        seenRef.current.add(m._id);
+        socket.emit("messageSeen", { messageId: m._id });
+      }
+    });
+  }, [chatId, activeMessages, user?._id]);
 
   return (
     <div key={chatId} className="h-full flex flex-col">
@@ -145,10 +166,49 @@ export default function ChatPage() {
         <button onClick={() => router.push("/dashboard")} className="md:hidden">
           ←
         </button>
-        <h1 className="font-bold text-lg">
-          {chatId ? "Chat" : receiverUser?.username}
+   
+        <h1
+          onClick={() => {
+            if (activeChat?.isGroup) {
+              openGroupInfo();
+            } else if (otherUser) {
+              openUserProfile();
+            }
+          }}
+          className="font-bold text-lg cursor-pointer"
+        >
+          {activeChat?.isGroup
+            ? activeChat.groupName
+            : otherUser?.username ?? "Chat"}
         </h1>
       </div>
+      {activeChat?.isGroup && (
+        <GroupInfoModal
+          open={showGroupInfo}
+          onClose={closeGroupInfo}
+          chat={activeChat}
+        />
+      )}
+      {!activeChat?.isGroup && otherUser && (
+        <UserProfileModal
+          open={showUserProfile}
+          onClose={closeUserProfile}
+          user={otherUser}
+        />
+      )}
+
+      {showAddMember && activeChat && (
+  
+  <AddGroupMemberModal
+    open={showAddMember}
+    onClose={closeAddMember}
+    chat={activeChat}
+  />
+)}
+<MyProfileModal
+  open={showProfile}
+  onClose={closeProfile}
+/>
 
       <div
         ref={containerRef}
@@ -168,7 +228,7 @@ export default function ChatPage() {
               className={`flex ${isMe ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[70%] rounded-lg text-white
+                className={`max-w-[49%] rounded-lg text-white
                      ${isMe ? "bg-blue-500" : "bg-gray-600"}`}
               >
                 {msg.messageType === "gif" && msg.mediaUrl && (

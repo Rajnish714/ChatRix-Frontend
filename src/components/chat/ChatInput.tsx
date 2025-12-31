@@ -142,7 +142,14 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 />
   <div ref={emojiRef} className="relative shrink-0">
     {showEmoji && (
-      <div className="absolute bottom-14 right-0 z-50">
+      <div className="    fixed md:absolute
+    bottom-16
+    left-1/2 md:left-auto
+    -translate-x-1/2 md:translate-x-0
+    md:right-0
+    z-50
+    max-w-[95vw]
+  ">
         <EmojiPicker
           onEmojiClick={(emoji) => {
             setText((prev) => prev + emoji.emoji);
@@ -158,7 +165,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
   setShowGif(false);
   setShowEmoji((p) => !p);
 }}
-      className="p-1"
+      className="p-1 shrink-0"
     >
       <Emoji unified="1f600" size={22} />
     </button>
@@ -166,7 +173,14 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 
   <div ref={gifRef} className="relative shrink-0">
     {showGif && (
-      <div className="absolute bottom-14 right-0 z-50">
+      <div className="    fixed md:absolute
+    bottom-16
+  ui-elevated 
+    left-1/2 md:left-auto
+    -translate-x-1/2 md:translate-x-0
+    md:right-0
+    z-50
+    max-w-[95vw] ">
       <GifPicker tenorApiKey={TENOR_KEY} onGifClick={(gif) => {
     const url = gif.url;
      

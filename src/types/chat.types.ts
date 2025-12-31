@@ -27,7 +27,6 @@ export interface UserSummary {
 }
 
 
-
 export interface LastMessage {
   _id: ObjectId;
   sender: ObjectId;
@@ -36,6 +35,7 @@ export interface LastMessage {
   mediaUrl?: string | null;
   createdAt: ISODateString;
 }
+
 
 export interface Chat {
   _id: ObjectId;
@@ -100,6 +100,13 @@ export interface SearchRequest {
   limit?: number;
 }
 
+
+export interface AddGroupMembersParams {
+  chatId: string;
+}
+export interface AddGroupMembersBody {
+  members: string[];
+}
 //-----------------response----------
 export interface GetAllChatsResponse {
   message: string;
@@ -171,3 +178,4 @@ export interface SearchUsersResponse {
   hasMore: boolean;
   pagination: Pagination;
 }
+

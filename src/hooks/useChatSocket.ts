@@ -6,6 +6,7 @@ import { useChatStore } from "@/stores/chat.store";
 import { Messages } from "@/types/chat.types";
 import { useAuth } from "./useAuth";
 
+
 export const useChatSocket = () => {
   const { user, token } = useAuth();
   const socketReady = useChatStore((s) => s.socketReady);
@@ -85,10 +86,37 @@ export const useChatSocket = () => {
       socket.emit("joinChat", group._id);
     });
 
+  socket.on("memberLeft", ({ chatId, userId }) => {
+    const myId= user?._id
+  if (userId === myId) {
+    useChatStore.getState().removeChat(chatId);
+    socket.emit("leaveChat", chatId);
+    return;
+  }
+    useChatStore.getState().removeGroupMember(chatId, userId);
+});
+
+socket.on("member-added", ({ chat }) => {
+  const myId = user?._id;
+  if (!myId) return;
+
+  const isMember = chat.members.some(
+    (m: string | { _id: string }) =>
+      (typeof m === "string" ? m : m._id) === myId
+  );
+
+  if (!isMember) return;
+
+  useChatStore.getState().addGroupMembers(chat);
+  socket.emit("joinChat", chat._id);
+});
+
     return () => {
       socket.off("online_users");
       socket.off("new_chat");
       socket.off("group_created");
+      socket.off("memberLeft")
+      socket.off("member-added")
     };
   }, [socketReady]);
 };

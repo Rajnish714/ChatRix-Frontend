@@ -1,11 +1,11 @@
 
 import "@/lib/fontawesome";
-import TopAlert from "@/components/ui/TopAlert";
+import TopAlert from "@/components/ui/feedback/TopAlert";
 import AuthProvider from "@/providers/AuthProvider";
 import SocketProvider from "@/providers/SocketProvider";
 import ThemeProvider from "@/providers/ThemeProvider";
 import "./globals.css";
-import ClientLayout from "@/components/ClientLayout";
+import ClientLayout from "@/components/ui/layout/ClientLayout";
 
 export default function RootLayout({
   children,

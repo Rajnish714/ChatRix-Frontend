@@ -1,5 +1,5 @@
 import api from "@/utils/axios";
-import { GetAllChatsResponse,GetMessagesRequest,GetMessagesResponse,SearchRequest,SearchSidebarResponse,PrivateChat, CreateGroupRequest, SearchUsersResponse } from "@/types/chat.types";
+import { GetAllChatsResponse,GetMessagesRequest,GetMessagesResponse,SearchRequest,SearchSidebarResponse,PrivateChat, CreateGroupRequest, SearchUsersResponse,  AddGroupMembersBody, AddGroupMembersParams } from "@/types/chat.types";
 
 export const useChatService={
       getallChatRequest: async (): Promise<GetAllChatsResponse> => {
@@ -54,6 +54,29 @@ createGroupRequest: async (
 ): Promise<PrivateChat> => {
   const res = await api.post("/chat/create-group", payload);
   return res.data.chat;
+},
+
+addMemberRequest: async (
+  params: AddGroupMembersParams,
+  body: AddGroupMembersBody
+): Promise<PrivateChat> => {
+  const res = await api.patch(
+    "/chat/add-member",
+    body,          
+    { params }    
+  );
+
+  return res.data.data;
+},
+//add admin remove member and admin 
+
+leaveGroupRequest: async (chatId: string) => {
+  const res = await api.post("/chat/leave-group",    null,        
+    {
+      params: { chatId }, 
+    });
+    
+  return res.data;
 }
 
 }

@@ -28,10 +28,16 @@ export default function SidebarProfile({
       <div className="relative">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={profilePic ?? "/assets/user-rollback.png"}
+         src={
+            profilePic
+              ? profilePic
+              : isGroup
+              ? "/assets/group-rollback.png"
+              : "/assets/user-rollback.png"
+          }
           width={36}
           height={36}
-          className="rounded-full object-cover"
+          className="rounded-full object-cover bg-gray-700"
           alt="profile"
         />
         
