@@ -14,7 +14,7 @@ import { useUIStore } from "@/stores/ui.store";
 import GroupInfoModal from "@/components/Modals/chat/GroupInfoModal";
 import UserProfileModal from "@/components/Modals/profile/UserProfileInfo";
 import AddGroupMemberModal from "@/components/Modals/chat/AddGroupMemberModal";
-import MyProfileModal from "@/components/Modals/MyProfileModal";
+
 
 const EMPTY_MESSAGES: Messages[] = [];
 const TOP_THRESHOLD = 40;
@@ -32,11 +32,10 @@ export default function ChatPage() {
     closeUserProfile,
     showAddMember,
     closeAddMember,
-    showProfile,
-    closeProfile
+    
   } = useUIStore();
-  const chatId =
-    params.chatId && params.chatId !== "new" ? params.chatId : null;
+
+  const chatId =params.chatId && params.chatId !== "new" ? params.chatId : null;
 
   const receiverUser =
     !chatId && searchParams.get("userId")
@@ -206,12 +205,7 @@ export default function ChatPage() {
   />
 )}
  
-  {showProfile  && (
-   <MyProfileModal
-  open={showProfile}
-  onClose={closeProfile}
-/>
-)}
+
 
 
       <div

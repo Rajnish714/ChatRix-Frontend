@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {  useRef, useState } from "react";
 import Cropper from "react-easy-crop";
 
 import { useUIStore } from "@/stores/ui.store";
 import { useChat } from "@/hooks/useChat";
-import { CreateGroupRequest } from "@/types/chat.types";
+
 import { getCroppedImage, CropArea } from "@/utils/imageCrop";
 
 import UserPicker, {
