@@ -169,7 +169,7 @@ export interface GetOrCreatePrivateChatResponse {
 export interface CreateGroupRequest {
   groupName: string;             
   members: string[];        
- imageUrl?: string | null;     
+ imageUrl?: string;
 }
 
 export interface SearchUsersResponse {

@@ -99,13 +99,13 @@ const searchSidebarUsers = useCallback(
 )
 
 const createGroup = useCallback(
-  async (payload: CreateGroupRequest) => {
+  async (formData: FormData) => {
     setError(null);
     setLoading(true);
 
     try {
      
-      await useChatService.createGroupRequest(payload);
+      await useChatService.createGroupRequest(formData);
 
   
     } catch (error) {

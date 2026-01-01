@@ -118,5 +118,5 @@ socket.on("member-added", ({ chat }) => {
       socket.off("memberLeft")
       socket.off("member-added")
     };
-  }, [socketReady]);
+  }, [socketReady,user?._id]);
 };

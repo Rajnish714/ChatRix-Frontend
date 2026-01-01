@@ -50,9 +50,9 @@ getOrCreatePrivateChatIdRequest: async (
 },
 
 createGroupRequest: async (
-  payload:CreateGroupRequest
+ formData: FormData
 ): Promise<PrivateChat> => {
-  const res = await api.post("/chat/create-group", payload);
+  const res = await api.post("/chat/create-group", formData);
   return res.data.chat;
 },
 

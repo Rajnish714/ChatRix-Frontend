@@ -205,10 +205,14 @@ export default function ChatPage() {
     chat={activeChat}
   />
 )}
-<MyProfileModal
+ 
+  {showProfile  && (
+   <MyProfileModal
   open={showProfile}
   onClose={closeProfile}
 />
+)}
+
 
       <div
         ref={containerRef}

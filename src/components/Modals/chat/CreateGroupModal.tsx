@@ -21,7 +21,8 @@ export default function CreateGroupModal() {
 
  
   const [groupName, setGroupName] = useState("");
-  const [groupImage, setGroupImage] = useState<string | null>(null);
+ const [groupImagePreview, setGroupImagePreview] = useState<string | null>(null);
+const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<PickerUser[]>([]);
 
 
@@ -37,7 +38,6 @@ export default function CreateGroupModal() {
 
   function resetAndClose() {
     setGroupName("");
-    setGroupImage(null);
     setSelectedUsers([]);
     setShowCropper(false);
     closeCreateGroup();
@@ -68,44 +68,47 @@ export default function CreateGroupModal() {
   };
 
   async function handleCropConfirm() {
-    if (!rawImage || !croppedAreaPixels) return;
+  if (!rawImage || !croppedAreaPixels) return;
 
-    const cropped = await getCroppedImage(rawImage, croppedAreaPixels);
-    setGroupImage(cropped);
-    setRawImage(null);
-    setShowCropper(false);
-  }
-//   async function handleCropConfirm() {
-//   if (!rawImage || !croppedAreaPixels) return;
+  const croppedBlob = await getCroppedImage(rawImage, croppedAreaPixels);
 
-//   const croppedBlob = await getCroppedImage(rawImage, croppedAreaPixels);
+  const file = new File([croppedBlob], "group.webp", {
+    type: croppedBlob.type,
+  });
 
-//   const previewUrl = URL.createObjectURL(croppedBlob);
+  const previewUrl = URL.createObjectURL(file);
 
-//   setGroupImage(previewUrl);
-//   setRawImage(null);
-//   setShowCropper(false);
-// }
+  setGroupImageFile(file);        
+  setGroupImagePreview(previewUrl); 
+
+  setRawImage(null);
+  setShowCropper(false);
+}
 
   /* ---------- create group ---------- */
-  async function handleCreateGroup() {
-    try{
+async function handleCreateGroup() {
+  try {
     if (!groupName.trim() || selectedUsers.length < 2) return;
 
-    const payload: CreateGroupRequest = {
-      groupName: groupName.trim(),
-      members: selectedUsers.map((u) => u._id),
-      imageUrl: groupImage,
-    };
+    const formData = new FormData();
+    formData.append("groupName", groupName.trim());
+    formData.append(
+      "members",
+      JSON.stringify(selectedUsers.map((u) => u._id))
+    );
 
-    await createGroup(payload);
-  
+    if (groupImageFile) {
+      formData.append("image", groupImageFile);
+    }
+
+    await createGroup(formData);
+
     resetAndClose();
-  }catch(err){
-show("something went wrong", "error") ;
-console.log(err);
+  } catch (err) {
+    show("Something went wrong", "error");
+    console.error(err);
   }
-  }
+}
 
 
 
@@ -170,11 +173,11 @@ console.log(err);
               onClick={() => imageInputRef.current?.click()}
               className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden"
             >
-              {groupImage ? (
-                <img
-                  src={groupImage}
-                  className="w-full h-full object-cover"
-                />
+            {groupImagePreview ? (
+  <img
+    src={groupImagePreview}
+    className="w-full h-full object-cover"
+  />
               ) : (
                 <span className="text-xs text-gray-500">
                   Add Image
