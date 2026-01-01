@@ -1,7 +1,7 @@
 
 "use client";
 import { forgotPasswordRequest, LoginRequest,OTPRequest,SignupRequest,resetPasswordRequest } from "@/types/auth.types";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useAuthService } from "@/services/auth.service";
 import { getErrorMessage } from "@/utils/getErrorMessage";
@@ -167,7 +167,25 @@ const verifyOTP = async (otp: string) => {
     }
   };
 
+const updateProfile = useCallback(
+  async (formData: FormData) => {
+    setError(null);
+    setLoading(true);
 
+    try {
+     
+     const res= await useAuthService.updateProfileRequest(formData);
+    return res
+  
+    } catch (error) {
+      setError(getErrorMessage(error));
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  },
+  []
+)
   return {
     user,
     token,
@@ -182,6 +200,7 @@ const verifyOTP = async (otp: string) => {
     forgotPassword,
     setOTPSession,
     otpSession,
+    updateProfile
     
   }
 }

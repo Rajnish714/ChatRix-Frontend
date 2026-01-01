@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -10,8 +9,7 @@ export default function MoreMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const openCreateGroup = useUIStore((s) => s.openCreateGroup);
-  const openProfile = useUIStore((s) => s.openProfile);
+  const { openModal } = useUIStore();
 
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -27,7 +25,6 @@ export default function MoreMenu() {
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Avoid hydration issues
   if (!resolvedTheme) return null;
 
   return (
@@ -50,20 +47,20 @@ export default function MoreMenu() {
             overflow-hidden
           "
         >
-          {/* Profile */}
+          {/* My Profile */}
           <MenuItem
             onClick={() => {
-              openProfile();
+              openModal("profile");
               setOpen(false);
             }}
           >
             My Profile
           </MenuItem>
 
-          {/* Create group */}
+          {/* Create Group */}
           <MenuItem
             onClick={() => {
-              openCreateGroup();
+              openModal("createGroup");
               setOpen(false);
             }}
           >
@@ -107,10 +104,7 @@ function MenuItem({
   return (
     <button
       onClick={onClick}
-      className="
-        w-full px-4 py-2 text-left text-sm
-        ui-hover
-      "
+      className="w-full px-4 py-2 text-left text-sm ui-hover"
     >
       {children}
     </button>

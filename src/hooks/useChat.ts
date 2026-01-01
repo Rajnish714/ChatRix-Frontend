@@ -117,6 +117,9 @@ const createGroup = useCallback(
   },
   []
 )
+
+
+
 const searchUsers = useCallback(
   async (params: SearchRequest): Promise<SearchUsersResponse> => {
     if (!params.q?.trim()) {
@@ -152,6 +155,7 @@ const searchUsers = useCallback(
 const getOrCreatePrivateChat = useCallback(
     async (otherUser: {
       _id: string;
+      name:string;
       username: string;
       profilePic?: string | null;
     }) => {
@@ -174,11 +178,13 @@ const getOrCreatePrivateChat = useCallback(
           members: [
             {
               _id: user._id,
+              name:user.name,
               username: user.username,
-              profilePic: user.profilepic,
+              profilePic: user.profilePic,
             },
             {
               _id: otherUser._id,
+              name:otherUser.name,
               username: otherUser.username,
               profilePic: otherUser.profilePic,
             },
@@ -259,6 +265,7 @@ const addGroupMembers = useCallback(
     getOrCreatePrivateChat,
     createGroup,
     leaveGroup,
-    addGroupMembers 
+    addGroupMembers,
+   
   };
 };

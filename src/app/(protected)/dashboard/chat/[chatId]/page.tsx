@@ -15,6 +15,8 @@ import GroupInfoModal from "@/components/Modals/chat/GroupInfoModal";
 import UserProfileModal from "@/components/Modals/profile/UserProfileInfo";
 import AddGroupMemberModal from "@/components/Modals/chat/AddGroupMemberModal";
 
+import ChatHeader from "@/components/chat/ChatHeader";
+
 
 const EMPTY_MESSAGES: Messages[] = [];
 const TOP_THRESHOLD = 40;
@@ -23,24 +25,15 @@ export default function ChatPage() {
   const params = useParams<{ chatId?: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const {
-    showGroupInfo,
-    openGroupInfo,
-    closeGroupInfo,
-    showUserProfile,
-    openUserProfile,
-    closeUserProfile,
-    showAddMember,
-    closeAddMember,
-    
-  } = useUIStore();
-
+  
+const { activeModal, openModal, closeModal } = useUIStore();
   const chatId =params.chatId && params.chatId !== "new" ? params.chatId : null;
 
   const receiverUser =
     !chatId && searchParams.get("userId")
       ? {
           _id: searchParams.get("userId")!,
+          name:searchParams.get("name")!,
           username: searchParams.get("username")!,
           profilePic: searchParams.get("profilePic") || null,
         }
@@ -169,40 +162,34 @@ export default function ChatPage() {
         <h1
           onClick={() => {
             if (activeChat?.isGroup) {
-              openGroupInfo();
+                 openModal("groupInfo");
+
             } else if (otherUser) {
-              openUserProfile();
+                 openModal("userProfile");
+
             }
           }}
           className="font-bold text-lg cursor-pointer"
         >
-          {activeChat?.isGroup
-            ? activeChat.groupName
-            : otherUser?.username ?? "Chat"}
+         {activeChat?.isGroup ? (
+  <ChatHeader
+    isGroup
+   groupName={activeChat.groupName ?? "Group"}
+  />
+) : (
+  otherUser && <ChatHeader user={otherUser} />
+)}
         </h1>
       </div>
-      {activeChat?.isGroup && (
-        <GroupInfoModal
-          open={showGroupInfo}
-          onClose={closeGroupInfo}
-          chat={activeChat}
-        />
-      )}
-      {!activeChat?.isGroup && otherUser && (
-        <UserProfileModal
-          open={showUserProfile}
-          onClose={closeUserProfile}
-          user={otherUser}
-        />
-      )}
+   {activeModal === "groupInfo" && activeChat && (
+  <GroupInfoModal chat={activeChat} />
+)}
+   {activeModal === "userProfile" && otherUser && (
+  <UserProfileModal user={otherUser} />
+)}
 
-      {showAddMember && activeChat && (
-  
-  <AddGroupMemberModal
-    open={showAddMember}
-    onClose={closeAddMember}
-    chat={activeChat}
-  />
+{activeModal === "addMember" && activeChat && (
+  <AddGroupMemberModal chat={activeChat} />
 )}
  
 

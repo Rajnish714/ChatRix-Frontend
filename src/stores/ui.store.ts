@@ -1,49 +1,30 @@
-import {create} from "zustand"
 
+import { create } from "zustand";
+
+export type ActiveModal =
+  | null
+  | "createGroup"
+  | "groupInfo"
+  | "userProfile"
+  | "profile"
+  | "addMember"
+  | "updateProfile";
 
 interface UIState {
-  showCreateGroup: boolean;
-  openCreateGroup: () => void;
-  closeCreateGroup: () => void;
+  activeModal: ActiveModal;
 
-    showGroupInfo: boolean;
-  openGroupInfo: () => void;
-  closeGroupInfo: () => void;
+  openModal: (modal: ActiveModal) => void;
+  closeModal: () => void;
 
-    showUserProfile: boolean;
-  openUserProfile: () => void;
-  closeUserProfile: () => void;
-
-      showProfile: boolean;
-  openProfile: () => void;
-  closeProfile: () => void;
-
-   showAddMember: boolean;
-  openAddMember: () => void;
-  closeAddMember: () => void;
- 
+  isOpen: (modal: ActiveModal) => boolean;
 }
 
+export const useUIStore = create<UIState>((set, get) => ({
+  activeModal: null,
 
-export const useUIStore = create<UIState>((set) => ({
-  showCreateGroup: false,
-  openCreateGroup: () => set({ showCreateGroup: true }),
-  closeCreateGroup: () => set({ showCreateGroup: false }),
+  openModal: (modal) => set({ activeModal: modal }),
 
+  closeModal: () => set({ activeModal: null }),
 
-    showGroupInfo: false,
-  openGroupInfo: () => set({ showGroupInfo: true }),
-  closeGroupInfo: () => set({ showGroupInfo: false }),
-
-     showUserProfile: false,
-  openUserProfile: () => set({ showUserProfile: true }),
-  closeUserProfile: () => set({ showUserProfile: false }),
-    
-  showProfile: false,
-  openProfile: () => set({ showProfile: true }),
-  closeProfile: () => set({ showProfile: false }),
-  
-  showAddMember: false,
-openAddMember: () => set({ showAddMember: true }),
-closeAddMember: () => set({ showAddMember: false }),
+  isOpen: (modal) => get().activeModal === modal,
 }));

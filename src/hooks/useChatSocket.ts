@@ -104,6 +104,7 @@ socket.on("member-added", ({ chat }) => {
     (m: string | { _id: string }) =>
       (typeof m === "string" ? m : m._id) === myId
   );
+  
 
   if (!isMember) return;
 
@@ -111,12 +112,21 @@ socket.on("member-added", ({ chat }) => {
   socket.emit("joinChat", chat._id);
 });
 
+
+socket.on("user_profile_updated", ({ userId, profilePic }) => {
+  if (!userId || !profilePic) return;
+
+  useChatStore
+    .getState()
+    .updateUserProfilePic(userId, profilePic);
+});
     return () => {
       socket.off("online_users");
       socket.off("new_chat");
       socket.off("group_created");
       socket.off("memberLeft")
       socket.off("member-added")
+      socket.off("user_profile_updated")
     };
   }, [socketReady,user?._id]);
 };

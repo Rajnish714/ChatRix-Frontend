@@ -15,7 +15,7 @@ import UserPicker, {
 import { useAlertStore } from "@/stores/alert.store";
 
 export default function CreateGroupModal() {
-  const closeCreateGroup = useUIStore((s) => s.closeCreateGroup);
+const { activeModal ,closeModal } = useUIStore();
   const { createGroup, isLoading } = useChat();
    const {show}= useAlertStore()
 
@@ -40,7 +40,7 @@ const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
     setGroupName("");
     setSelectedUsers([]);
     setShowCropper(false);
-    closeCreateGroup();
+    closeModal();
   }
 
 // close modal
@@ -111,7 +111,7 @@ async function handleCreateGroup() {
 }
 
 
-
+if (activeModal !== "createGroup") return null;
   /* ---------- UI ---------- */
   return (
     <>
@@ -174,10 +174,10 @@ async function handleCreateGroup() {
               className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden"
             >
             {groupImagePreview ? (
-  <img
-    src={groupImagePreview}
-    className="w-full h-full object-cover"
-  />
+                <img
+                  src={groupImagePreview}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <span className="text-xs text-gray-500">
                   Add Image

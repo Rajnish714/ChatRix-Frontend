@@ -7,6 +7,7 @@ import { useAuthStore } from "@/stores/auth.store";
 
 export interface PickerUser {
   _id: string;
+  name:string;
   username: string;
   profilePic?: string | null;
 }
@@ -48,6 +49,7 @@ const cachedUsers = useMemo<PickerUser[]>(() => {
       if (typeof m !== "string") {
         map.set(id, {
           _id: id,
+          name:m.name,
           username: m.username,
           profilePic: m.profilePic ?? null,
         });

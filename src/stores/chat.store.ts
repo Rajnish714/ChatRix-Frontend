@@ -30,6 +30,7 @@ interface ChatStore {
  removeGroupMember: (chatId: string, userId: string) => void;
 
   updateLastMessage: (chatId: string, lastMessage: Chat["lastMessage"]) => void;
+updateUserProfilePic: (userId: string, profilePic: string) => void;
 
   setSelectedChatId: (chatId: string | null) => void;
   updateMessageDelivered: (
@@ -209,5 +210,17 @@ export const useChatStore = create<ChatStore>((set) => ({
         },
       };
     }),
+
+updateUserProfilePic: (userId, profilePic) =>
+  set((state) => ({
+    chats: state.chats.map((chat) => ({
+      ...chat,
+      members: chat.members.map((m) =>
+        m._id === userId
+          ? { ...m, profilePic }
+          : m
+      ),
+    })),
+  })),
 }))
 

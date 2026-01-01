@@ -81,7 +81,7 @@ useEffect(() => {
                 return (
                 <SidebarProfile
                   key={chat._id}
-                  title={chat.isGroup ? chat.groupName : other?.username}
+                  title={chat.isGroup ? chat.groupName : other?.name}
                   profilePic={profilePic}
                   isGroup={chat.isGroup}
                   isOnline={
@@ -138,7 +138,7 @@ useEffect(() => {
                     <div  key={chat._id} className="border-b ">
                    <SidebarProfile
                       key={chat._id}
-                      title={chat.isGroup ? chat.groupName : other?.username}
+                      title={chat.isGroup ? chat.groupName : other?.name}
                       profilePic={profilePic}
                       isGroup={chat.isGroup}
                       isOnline={

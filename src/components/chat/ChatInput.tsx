@@ -21,6 +21,7 @@ interface Props {
   chatId: string | null;
   receiverUser?: {
     _id: string;
+    name:string;
     username: string;
     profilePic?: string | null;
   } | null;

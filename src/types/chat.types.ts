@@ -12,12 +12,14 @@ export type MessageType =
 
 export interface ChatMember {
   _id: ObjectId;
+  name:string,
   username: string;
   profilePic?: string | null;
 }
 
 export interface UserSummary {
   _id: ObjectId;
+  name:string;
   username: string;
   email: string;
   profilePic: string | null;
@@ -57,6 +59,7 @@ export interface Chat {
 
 export interface MessageSender {
   _id: ObjectId;
+  name:string;
   username: string;
   profilePic?: string | null;
 }
@@ -150,6 +153,7 @@ export interface SearchSidebarResponse {
 }
 
 export interface PrivateChat {
+  profilePic: string;
   _id: ObjectId;
   isGroup: false;
   members: ChatMember[];

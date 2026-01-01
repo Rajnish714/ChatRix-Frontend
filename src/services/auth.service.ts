@@ -14,6 +14,7 @@ import {
   resetPasswordResponse,
   logoutResponse,
 } from "@/types/auth.types";
+import { PrivateChat } from "@/types/chat.types";
 import api from "@/utils/axios";
 
 export const useAuthService = {
@@ -59,6 +60,14 @@ export const useAuthService = {
   ): Promise<resetPasswordResponse> => {
     const res = await api.post("/auth/reset-password", data);
     return res.data;
+  },
+
+  updateProfileRequest: async (
+   formData: FormData
+  ): Promise<PrivateChat> => {
+    const res = await api.post("/users/update-profile", formData);
+   
+    return res.data.data;
   },
 
   logoutRequest: async (): Promise<logoutResponse> => {

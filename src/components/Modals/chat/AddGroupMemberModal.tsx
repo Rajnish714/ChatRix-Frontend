@@ -5,20 +5,21 @@ import UserPicker, { PickerUser } from "@/components/common/UserPicker";
 import { useChat } from "@/hooks/useChat";
 import { Chat } from "@/types/chat.types";
 import { useState } from "react";
+import { useUIStore } from "@/stores/ui.store";
 
 interface Props {
-  open: boolean;
-  onClose: () => void;
   chat: Chat;
 }
 
-export default function AddGroupMemberModal({
-  open,
-  onClose,
-  chat,
-}: Props) {
+export default function AddGroupMemberModal({ chat }: Props) {
   const { addGroupMembers, isLoading } = useChat();
+  const { activeModal, closeModal } = useUIStore();
+
   const [selectedUsers, setSelectedUsers] = useState<PickerUser[]>([]);
+
+ 
+  if (activeModal !== "addMember") return null;
+  if (!chat) return null;
 
   const handleAddMembers = async () => {
     if (!selectedUsers.length) return;
@@ -29,21 +30,20 @@ export default function AddGroupMemberModal({
       });
 
       setSelectedUsers([]);
-      onClose();
+      closeModal();
     } catch (err) {
       console.error(err);
     }
   };
 
- 
   return (
-    <BaseModal open={open} onClose={onClose} title="Add Members">
+    <BaseModal onClose={closeModal} title="Add Members">
       <div className="p-4">
         <UserPicker
           selectedUsers={selectedUsers}
-            excludeUserIds={chat.members.map((m) =>
-    typeof m === "string" ? m : m._id
-  )}
+          excludeUserIds={chat.members.map((m) =>
+            typeof m === "string" ? m : m._id
+          )}
           onAdd={(u) =>
             setSelectedUsers((prev) => [...prev, u])
           }

@@ -1,8 +1,9 @@
 export interface User {
   _id: string;
+  name:string;
   username: string;
   email: string;
-  profilepic:string;
+  profilePic:string;
  }
 export interface LoginRequest {
   email: string;
@@ -17,7 +18,7 @@ export interface LoginResponse {
 
 
 export interface SignupRequest {
-  username:string;
+  name:string;
   email: string;
   password: string;
   profile:string | null;

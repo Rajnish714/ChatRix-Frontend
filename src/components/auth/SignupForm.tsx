@@ -9,7 +9,7 @@ export default function SignupForm() {
   const router = useRouter();
   const { isError, isLoading, signupUser } = useAuth();
 
-  const [username, setUsername] = useState("");
+  const [name, setname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [profile, setProfile] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export default function SignupForm() {
     e.preventDefault();
 
     const success = await signupUser({
-      username,
+      name,
       email,
       password,
       profile,
@@ -47,13 +47,13 @@ export default function SignupForm() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <label htmlFor="Username">Username</label>
+          <label htmlFor="name">Name</label>
           <input
             type="text"
-            id="Username"
-            value={username}
-            placeholder="Username"
-            onChange={(e) => setUsername(e.target.value)}
+            id="name"
+            value={name}
+            placeholder="name"
+            onChange={(e) => setname(e.target.value)}
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm
                        focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
