@@ -19,7 +19,9 @@ export default function RootLayout({
         <AuthProvider>
           <SocketProvider>
             <TopAlert />
-           <ClientLayout>{children}</ClientLayout>
+           <ClientLayout>{children}<p className="absolute bottom-1 left-1 text-[10px] text-gray-400 leading-none">
+  Built by Rajnish • © 2026 Chattrix
+</p></ClientLayout>
           </SocketProvider>
         </AuthProvider>
         </ThemeProvider>

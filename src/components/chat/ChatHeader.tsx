@@ -12,13 +12,14 @@ interface User {
 interface Props {
   isGroup?: boolean;
   groupName?: string;
+  groupImage?:string ;
   user?: User | null;
 }
 
-export default function ChatHeader({ isGroup, groupName, user }: Props) {
+export default function ChatHeader({ isGroup, groupName,groupImage, user }: Props) {
   const onlineUsers = useChatStore((s) => s.onlineUsers);
 
-  // ✅ Guard FIRST
+ 
   if (!isGroup && !user) return null;
 
   const isOnline =
@@ -31,7 +32,7 @@ export default function ChatHeader({ isGroup, groupName, user }: Props) {
         <img
           src={
             isGroup
-              ? "/assets/group-rollback.png"
+              ? groupImage 
               : user?.profilePic ?? "/assets/user-rollback.png"
           }
           width={36}

@@ -174,6 +174,7 @@ const { activeModal, openModal, closeModal } = useUIStore();
          {activeChat?.isGroup ? (
   <ChatHeader
     isGroup
+    groupImage={activeChat.groupImage ?? "/assets/group-rollback.png"}
    groupName={activeChat.groupName ?? "Group"}
   />
 ) : (

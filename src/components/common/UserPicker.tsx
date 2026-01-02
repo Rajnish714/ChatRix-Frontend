@@ -116,7 +116,7 @@ const displayUsers = useMemo(() => {
               onClick={() => onRemove(u._id)}
               className="px-2 py-1 rounded text-sm cursor-pointer bg-gray-400 "
             >
-              {u.username} ✕
+              {u.name} ✕
             </span>
           ))}
         </div>
@@ -142,7 +142,7 @@ const displayUsers = useMemo(() => {
               onClick={() => onAdd(u)}
               className="p-3 ui-hover cursor-pointer"
             >
-              {u.username}
+              {u.name}
             </div>
           ))}
       </div>

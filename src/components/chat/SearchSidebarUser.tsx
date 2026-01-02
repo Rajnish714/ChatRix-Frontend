@@ -124,7 +124,7 @@ export default function SearchSidebarUser({ onSearchEnd }: Props) {
           </div>
 
           <div className="flex flex-col min-w-0">
-            <span className="font-medium truncate">{u.username}</span>
+            <span className="font-medium truncate">{u.name}</span>
           </div>
         </div>
       ))}

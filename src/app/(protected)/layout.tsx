@@ -8,6 +8,7 @@ import { useAuthStore } from "@/stores/auth.store";
 import MyProfileModal from "@/components/Modals/MyProfileModal";
 import CreateGroupModal from "@/components/Modals/chat/CreateGroupModal";
 import UpdateProfileModal from "@/components/Modals/profile/UpdateProfileModal";
+import Spinner from "@/components/ui/Spinner";
 
 
 export default function ProtectedLayout({
@@ -24,7 +25,10 @@ export default function ProtectedLayout({
     }
   }, [isAuthloading, token, router]);
 
-  if (isAuthloading) return <div>Redirecting…</div>;
+  if (isAuthloading) return <div> <Spinner
+          fullscreen
+          text="please wait we working on it."
+        /></div>;
   if (!token) return null;
 
   return (
@@ -34,7 +38,7 @@ export default function ProtectedLayout({
       <MyProfileModal />
       <CreateGroupModal />
       <UpdateProfileModal/>
-   
+
     
     </>
   );

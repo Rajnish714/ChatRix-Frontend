@@ -13,7 +13,7 @@ export default function ClientLayout({
   return (
     <>
       {children}
-      {activeModal === "createGroup" && <CreateGroupModal />}
+      {activeModal === "createGroup" && <CreateGroupModal /> }
     </>
   );
 }

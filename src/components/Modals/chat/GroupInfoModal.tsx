@@ -83,7 +83,7 @@ export default function GroupInfoModal({ chat }: Props) {
               key={m._id}
               className="px-4 py-2 flex items-center justify-between"
             >
-              <span>{m.username}</span>
+              <span>{m.name}</span>
 
               {memberIsAdmin && (
                 <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">

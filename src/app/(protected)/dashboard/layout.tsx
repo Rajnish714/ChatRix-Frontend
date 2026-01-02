@@ -109,7 +109,7 @@ useEffect(() => {
             <div className="h-full flex flex-col">
              
               <div className="px-4 py-3 border-b flex items-center justify-between">
-                <span className="font-bold text-lg">ChatRix</span>
+                <span className="font-bold text-lg">ChattRix</span>
              
                   <MoreMenu/>
                
@@ -157,7 +157,8 @@ useEffect(() => {
         </div>
 
         {/* pc chat page*/}
-        <div className="hidden md:block h-full">{children}</div>
+        <div className="hidden md:block h-full">{children}  </div>
+       
       </main>
     </div>
   );
