@@ -17,7 +17,7 @@ export default function OTPPage(){
 async function handleVerifyOtp(otp:string){
     const success = await verifyOTP(otp);
       if (success) {
-         show("login succesfully.", "success");
+         show("User registered successfully.", "success");
       router.replace("/login");
     }else show("something went wrong", "error");
 }

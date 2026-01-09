@@ -25,6 +25,9 @@ export default function ChatHeader({ isGroup, groupName,groupImage, user }: Prop
   const isOnline =
     !isGroup && user ? onlineUsers.includes(user._id) : false;
 
+console.log(user,"ye aaya");
+
+
   return (
     <div className="flex items-center gap-3 px-4 py-2 cursor-pointer rounded-full ui-hover">
       <div className="relative">

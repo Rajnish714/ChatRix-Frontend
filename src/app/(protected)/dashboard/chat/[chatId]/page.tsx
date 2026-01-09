@@ -26,7 +26,7 @@ export default function ChatPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
-const { activeModal, openModal, closeModal } = useUIStore();
+const { activeModal, openModal } = useUIStore();
   const chatId =params.chatId && params.chatId !== "new" ? params.chatId : null;
 
   const receiverUser =
@@ -178,7 +178,9 @@ const { activeModal, openModal, closeModal } = useUIStore();
    groupName={activeChat.groupName ?? "Group"}
   />
 ) : (
-  otherUser && <ChatHeader user={otherUser} />
+ 
+  otherUser ?<ChatHeader user={otherUser} 
+   />: <ChatHeader user={receiverUser}/>
 )}
         </h1>
       </div>

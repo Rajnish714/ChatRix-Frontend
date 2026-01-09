@@ -90,7 +90,12 @@ export default function SearchSidebarUser({ onSearchEnd }: Props) {
     if (existingChat) {
       router.push(`/dashboard/chat/${existingChat._id}`);
     } else {
-      router.push(`/dashboard/chat/new?userId=${u._id}&username=${u.username}`);
+     router.push(
+  `/dashboard/chat/new?userId=${u._id}` +
+  `&name=${encodeURIComponent(u.name)}` +
+  `&username=${encodeURIComponent(u.username)}` +
+  `&profilePic=${encodeURIComponent(u.profilePic ?? "")}`
+);
     }
   };
 
